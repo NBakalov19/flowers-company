@@ -22,7 +22,5 @@ public interface WarehouseService {
   void deleteWarehouse(String id);
 
   void emptyWarehouse(String id);
-
-  void moveFlowersBatch(FlowersBatchServiceModel batch,WarehouseServiceModel currentWarehouse, WarehouseServiceModel nextWarehouse);
 }
 

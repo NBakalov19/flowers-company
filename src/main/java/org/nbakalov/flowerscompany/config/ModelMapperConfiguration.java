@@ -2,9 +2,12 @@ package org.nbakalov.flowerscompany.config;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.models.FlowersBatchUpdateModel;
+import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchUpdateModel;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
+import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
+import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
+import org.nbakalov.flowerscompany.web.models.api.MyOrdersApiModel;
 import org.nbakalov.flowerscompany.web.models.api.TodayFlowersBatchApiModel;
 import org.nbakalov.flowerscompany.web.models.view.FlowerBatchDeleteViewModel;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +27,9 @@ public class ModelMapperConfiguration {
 
     Converter<WarehouseServiceModel, String> warehouseServiceModelStringConverter =
             context -> String.valueOf(context.getSource().getName());
+
+    Converter<UserServiceModel, String> userServiceModelStringConverter =
+            context -> String.valueOf(context.getSource().getUsername());
 
     modelMapper.createTypeMap(
             FlowersBatchServiceModel.class, TodayFlowersBatchApiModel.class)
@@ -48,6 +54,15 @@ public class ModelMapperConfiguration {
                             .map(
                                     FlowersBatchServiceModel::getWarehouse,
                                     FlowerBatchDeleteViewModel::setWarehouse));
+
+    modelMapper
+            .createTypeMap(OrderServiceModel.class, MyOrdersApiModel.class)
+            .addMappings(map ->
+                    map.using(userServiceModelStringConverter)
+                            .map(
+                                    OrderServiceModel::getCustomer,
+                                    MyOrdersApiModel::setCustomer
+                            ));
   }
 
   @Bean

@@ -1,0 +1,42 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <th:block th:include="~{fragments/head}"/>
+    <script th:src="@{/js/fetch/getTodaysBatches.js}"></script>
+</head>
+<body>
+<header>
+    <th:block th:include="~{fragments/navbar}"/>
+</header>
+<main class="mt-3">
+    <div class="container">
+        <div class="pt-5 mt-5">
+            <h1 class="text-center text-light" th:value="${principal.getUsername() + 'Orders'}"></h1>
+            <hr class="style13">
+            <table style="text-shadow: none" class="table table-hover bg-light">
+                <thead>
+                <tr class="row mx-auto">
+                    <th class="col-sm-1 text-center text-dark font-weight-bold">#</th>
+                    <th class="col-md-1 text-center text-dark font-weight-bold">Customer</th>
+                    <th class="col-md-1 text-center text-dark font-weight-bold">Variety</th>
+                    <th class="col-md-1 text-center text-dark font-weight-bold">Trays</th>
+                    <th class="col-md-1 text-center text-dark font-weight-bold">Bunches Per Tray</th>
+                    <th class="col-md-2 text-center text-dark font-weight-bold">Order Date</th>
+                    <th class="col-md-2 text-center text-dark font-weight-bold">Finished On</th>
+                    <th class="col-md-3 text-center text-dark font-weight-bold">Status</th>
+                    <th class="col-md-3 text-center text-dark font-weight-bold">Actions</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+            <hr class="style13 w-100">
+        </div>
+    </div>
+</main>
+<footer>
+    <th:block th:include="~{fragments/footer}"/>
+</footer>
+</body>
+</html>

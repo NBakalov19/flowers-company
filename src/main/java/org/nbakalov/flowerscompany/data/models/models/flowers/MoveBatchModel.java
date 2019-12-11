@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.data.models.models;
+package org.nbakalov.flowerscompany.data.models.models.flowers;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

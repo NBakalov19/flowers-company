@@ -1,7 +1,6 @@
 package org.nbakalov.flowerscompany.services.services;
 
-import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
-import org.nbakalov.flowerscompany.data.models.models.MoveBatchModel;
+import org.nbakalov.flowerscompany.data.models.models.flowers.MoveBatchModel;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 
 import java.util.List;

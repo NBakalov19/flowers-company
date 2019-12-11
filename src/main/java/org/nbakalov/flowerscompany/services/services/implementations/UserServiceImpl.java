@@ -38,13 +38,14 @@ public class UserServiceImpl implements UserService {
     } else {
       userServiceModel.setAuthorities(new LinkedHashSet<>());
       userServiceModel.getAuthorities()
-              .add(roleService.findByAuthority(ROLE_CUSTOMER));
+              .add(roleService.findByAuthority(CUSTOMER));
     }
 
     User user = modelMapper.map(userServiceModel, User.class);
     user.setPassword(bCryptPasswordEncoder.encode(userServiceModel.getPassword()));
+    userRepository.saveAndFlush(user);
 
-    return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
+    return modelMapper.map(user, UserServiceModel.class);
   }
 
   @Override
@@ -97,10 +98,10 @@ public class UserServiceImpl implements UserService {
     userServiceModel.getAuthorities().clear();
 
     if (role.equals("operator")) {
-      userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_OPERATOR));
+      userServiceModel.getAuthorities().add(roleService.findByAuthority(OPERATOR));
     } else if (role.equals("admin")) {
-      userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_OPERATOR));
-      userServiceModel.getAuthorities().add(roleService.findByAuthority(ROLE_ADMIN));
+      userServiceModel.getAuthorities().add(roleService.findByAuthority(OPERATOR));
+      userServiceModel.getAuthorities().add(roleService.findByAuthority(ADMIN));
     }
 
     userRepository.saveAndFlush(modelMapper.map(userServiceModel, User.class));

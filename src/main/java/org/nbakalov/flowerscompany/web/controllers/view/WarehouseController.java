@@ -1,9 +1,9 @@
 package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.models.WarehouseCreateModel;
-import org.nbakalov.flowerscompany.data.models.models.WarehouseUpdateModel;
+import lombok.NoArgsConstructor;
+import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseCreateModel;
+import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseUpdateModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/warehouses")
+@NoArgsConstructor
 @AllArgsConstructor
 public class WarehouseController extends BaseController {
 
-  private final WarehouseService warehouseService;
-  private final ModelMapper modelMapper;
+  private WarehouseService warehouseService;
 
   @GetMapping("/create-warehouse")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -118,7 +118,7 @@ public class WarehouseController extends BaseController {
   @PostMapping("/delete/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   public ModelAndView deleteWarehouseConfirm(@PathVariable String id,
-                                           @ModelAttribute WarehouseUpdateModel warehouseUpdateModel) {
+                                             @ModelAttribute WarehouseUpdateModel warehouseUpdateModel) {
 
     warehouseService.deleteWarehouse(id);
 

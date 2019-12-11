@@ -1,8 +1,9 @@
 package org.nbakalov.flowerscompany.web.controllers.api;
 
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
+import lombok.NoArgsConstructor;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.web.controllers.BaseApiController;
 import org.nbakalov.flowerscompany.web.models.api.AllWarehouseApiModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/warehouses/api")
 @AllArgsConstructor
-public class WarehouseApiController {
+@NoArgsConstructor
+public class WarehouseApiController extends BaseApiController {
 
-  private final WarehouseService warehouseService;
-  private final ModelMapper modelMapper;
+  private WarehouseService warehouseService;
 
   @GetMapping("/all")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")

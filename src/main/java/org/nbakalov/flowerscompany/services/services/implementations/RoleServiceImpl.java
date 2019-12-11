@@ -26,9 +26,9 @@ public class RoleServiceImpl implements RoleService {
   public void seedRolesInDb() {
     if (roleRepository.count() == 0) {
       roleRepository.saveAndFlush(new Role(ROLE_CUSTOMER));
-      roleRepository.saveAndFlush(new Role(ROLE_OPERATOR));
+      roleRepository.saveAndFlush(new Role(OPERATOR));
       roleRepository.saveAndFlush(new Role(ROLE_ADMIN));
-      roleRepository.saveAndFlush(new Role(ROLE_ROOT));
+      roleRepository.saveAndFlush(new Role(ROOT));
     }
   }
 

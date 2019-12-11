@@ -1,35 +1,35 @@
 package org.nbakalov.flowerscompany.web.controllers.api;
 
-
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
+import org.nbakalov.flowerscompany.services.services.OrderService;
 import org.nbakalov.flowerscompany.web.controllers.BaseApiController;
-import org.nbakalov.flowerscompany.web.models.api.TodayFlowersBatchApiModel;
+import org.nbakalov.flowerscompany.web.models.api.MyOrdersApiModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/flowers/api")
+@RequestMapping("/orders/api/")
 @AllArgsConstructor
 @NoArgsConstructor
-public class FlowerBatchApiController extends BaseApiController {
+public class OrderApiController extends BaseApiController {
 
-  private FlowersBatchService flowersBatchService;
+  private OrderService orderService;
 
-  @GetMapping("/todays-batches")
-  @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public List<TodayFlowersBatchApiModel> findTodaysBatches() {
+  @GetMapping("/my-orders")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public List<MyOrdersApiModel> findMyOrders(Principal principal) {
 
-    return flowersBatchService.findAllBatchesRegisteredToday()
+    return orderService.findAllMyOrders(principal.getName())
             .stream()
-            .map(fb -> modelMapper.map(fb, TodayFlowersBatchApiModel.class))
+            .map(orderServiceModel ->
+                    modelMapper.map(orderServiceModel, MyOrdersApiModel.class))
             .collect(Collectors.toList());
-
   }
 }

@@ -32,9 +32,9 @@ public class WarehouseServiceImpl implements WarehouseService {
     warehouseServiceModel.setCurrCapacity(INITIAL_CURRENT_CAPACITY);
 
     Warehouse warehouse = modelMapper.map(warehouseServiceModel, Warehouse.class);
+    warehouseRepository.saveAndFlush(warehouse);
 
-    return modelMapper.map(
-            warehouseRepository.saveAndFlush(warehouse), WarehouseServiceModel.class);
+    return modelMapper.map(warehouse, WarehouseServiceModel.class);
   }
 
   @Override
@@ -115,14 +115,6 @@ public class WarehouseServiceImpl implements WarehouseService {
     } else {
       throw new IllegalArgumentException("Not Possible To Empty Warehouse.");
     }
-  }
-
-  @Override
-  public void moveFlowersBatch(FlowersBatchServiceModel batch,
-                               WarehouseServiceModel currentWarehouse,
-                               WarehouseServiceModel nextWarehouse) {
-
-
   }
 
   @Override

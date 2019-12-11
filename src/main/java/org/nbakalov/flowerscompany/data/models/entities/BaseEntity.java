@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseEntity {
+public class BaseEntity {
 
   @Id
   @GeneratedValue(generator = "uuid-string")

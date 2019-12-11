@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
-import org.nbakalov.flowerscompany.data.models.models.MoveBatchModel;
+import org.nbakalov.flowerscompany.data.models.models.flowers.MoveBatchModel;
 import org.nbakalov.flowerscompany.data.repositories.FlowersBatchRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
@@ -37,8 +37,10 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     hasRoomInWarehouse(warehouseServiceModel, flowersBatchServiceModel);
 
-    FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
-            modelMapper.map(flowersBatchServiceModel, FlowersBatch.class));
+    FlowersBatch flowersBatch =
+            modelMapper.map(flowersBatchServiceModel, FlowersBatch.class);
+
+    flowersBatchRepository.saveAndFlush(flowersBatch);
 
     return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
   }
@@ -132,7 +134,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   public void deleteBatch(String id) {
 
     FlowersBatch flowersBatch = flowersBatchRepository.findById(id)
-                    .orElseThrow(() -> new NoResultException("Flower batch not found."));
+            .orElseThrow(() -> new NoResultException("Flower batch not found."));
 
     flowersBatchRepository.delete(flowersBatch);
   }

@@ -2,8 +2,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="~{fragments/head}"/>
-    <link rel="stylesheet"
-          th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+    <script th:src="@{/js/fetch/getWarehousesNames.js}"></script>
 </head>
 <body>
 <header>
@@ -13,31 +13,17 @@
     <div class="container">
         <div class="pt-5 mt-5">
             <div class="container-1">
-                <h2 class="text-center text-light">Edit Flowers Batch</h2>
+                <h2 class="text-center text-light">Make Order</h2>
                 <hr class="style13 w-100">
                 <div class="d-flex justify-content-center align-content-center container">
-                    <form class="mx-auto" th:method="post" th:object="${batch}"
-                          th:action="@{/flowers/edit-batch/{id}(id=*{id})}">
-                        <input name="_csrf" type="hidden" value="80417983-fe8b-45c7-963e-31f6915a1562">
-                        <div style="width: 240px" class="form-group d-inline-block">
-                            <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="supervisior" class="h4 mb-2 text-white">Supervisior</label>
-                            </div>
-                            <input id="supervisior" name="teamSupervisor" th:value="*{teamSupervisor}" type="text"
-                                   class="form-control" required="required">
-                        </div>
-                        <div style="width: 240px" class="form-group d-inline-block">
-                            <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="field" class="h4 mb-2 text-white">Field</label>
-                            </div>
-                            <input id="field" name="fieldName" th:value="*{fieldName}" type="text"
-                                   class="form-control" required="required">
-                        </div>
+                    <form class="mx-auto" th:action="@{/orders/make-order}" th:method="post">
+                        <input name="_csrf" type="hidden" value="80417983-fe8b-45c7-963e-31f6915a1569">
                         <div class="form-group">
                             <div class="label-holder textCol d-flex justify-content-center">
                                 <label class="h4 mb-2 text-white" for="variety">Variety</label>
                             </div>
-                            <select id="variety" name="variety" class="custom-select " required="required">
+                            <select id="variety" name="variety" class="custom-select">
+                                <option disabled selected value>Select Variety</option>
                                 <option th:each="variety : ${varieties}"
                                         th:value="${variety}"
                                         th:text="${variety.varietyName}">
@@ -48,7 +34,7 @@
                             <div class="label-holder textCol d-flex justify-content-center">
                                 <label for="traysCount" class="h4 mb-2 text-white">Trays</label>
                             </div>
-                            <input id="traysCount" name="trays" th:value="*{trays}" type="number"
+                            <input id="traysCount" name="trays" placeholder="Trays Count" type="number"
                                    class="form-control" min="1" required="required">
                         </div>
                         <div class="form-group align-content-center">
@@ -57,50 +43,43 @@
                             </div>
                             <div class="radio custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_0" type="radio"
-                                       class="custom-control-input" value="10" required="required"
-                                th:checked="*{bunchesPerTray == 10}">
+                                       class=" custom-control-input" value="10" required="required">
                                 <label for="bunchesPerTray_0" class="custom-control-label text-white">10</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_1" type="radio"
-                                       class="custom-control-input" value="15" required="required"
-                                       th:checked="*{bunchesPerTray == 15}">>
+                                       class="custom-control-input" value="15" required="required">
                                 <label for="bunchesPerTray_1" class="custom-control-label text-white">15</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_2" type="radio"
-                                       class="custom-control-input" value="16" required="required"
-                                       th:checked="*{bunchesPerTray == 16}">>
+                                       class="custom-control-input" value="16" required="required">
                                 <label for="bunchesPerTray_2" class="custom-control-label text-white">16</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_3" type="radio"
-                                       class="custom-control-input" value="17" required="required"
-                                       th:checked="*{bunchesPerTray == 17}">>
+                                       class="custom-control-input" value="17" required="required">
                                 <label for="bunchesPerTray_3" class="custom-control-label text-white">17</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_4" type="radio"
-                                       class="custom-control-input" value="18" required="required"
-                                       th:checked="*{bunchesPerTray == 18}">>
+                                       class="custom-control-input" value="18" required="required">
                                 <label for="bunchesPerTray_4" class="custom-control-label text-white">18</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_5" type="radio"
-                                       class="custom-control-input" value="20" required="required"
-                                       th:checked="*{bunchesPerTray == 20}">
+                                       class="custom-control-input" value="20" required="required">
                                 <label for="bunchesPerTray_5" class="custom-control-label text-white">20</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_6" type="radio"
-                                       class="custom-control-input" value="25" required="required"
-                                       th:checked="*{bunchesPerTray == 25}">>
+                                       class="custom-control-input" value="25" required="required">
                                 <label for="bunchesPerTray_6" class="custom-control-label text-white">25</label>
                             </div>
                         </div>
                         <div class="button-holder d-flex justify-content-center">
                             <div>
-                                <button name="submit" type="submit" class="btn btn-primary">Edit Batch</button>
+                                <button name="submit" type="submit" class="btn btn-primary">Make Order</button>
                             </div>
                         </div>
                     </form>

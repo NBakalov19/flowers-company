@@ -1,11 +1,16 @@
 package org.nbakalov.flowerscompany.web.controllers;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.servlet.ModelAndView;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
+@Getter
 public class BaseController {
+
+  protected ModelMapper modelMapper;
+
 
   protected ModelAndView view(String viewName, ModelAndView modelAndView) {
     modelAndView.setViewName(viewName);
