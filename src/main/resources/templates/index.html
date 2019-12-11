@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <th:block th:include="~{fragments/head}"/>
+</head>
+<body class="index">
+<header>
+    <th:block th:include="~{fragments/navbar}"/>
+</header>
+<main>
+    <div class="banner">
+        <video autoplay muted loop class="tagline-video">
+            <source src="https://res.cloudinary.com/nikolaybakalov/video/upload/v1575186085/video-flowers_gymjqx.mp4"
+                    type="video/mp4">
+        </video>
+        <div class="overlay"></div>
+        <div class="banner-innner">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <div class="banner-left">
+                            <h1> Lorem ipsum dolor sit amet, consectetur adipiscing elit </h1>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                                ut
+                                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                                ullamco
+                                laboris nisi ut aliquip ex ea commodo consequat</p>
+                            <a href="#"> Contact </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer th:include="~{fragments/footer}"></footer>
+</body>
+</html>

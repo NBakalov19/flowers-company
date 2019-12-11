@@ -1,0 +1,70 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="~{fragments/head}"/>
+</head>
+<body>
+<header>
+    <th:block th:include="~{fragments/navbar}"/>
+</header>
+<main class="mt-3">
+    <div class="container">
+        <div class="pt-5 mt-5">
+            <div class="container-1">
+                <h2 class="text-center text-light">Edit Warehouse</h2>
+                <form class="mx-auto w-15" th:method="post" th:object="${warehouse}"
+                      th:action="@{/warehouses/edit/{id}(id=*{id})}">
+                    <div class="form-group">
+                        <div class="label-holder textCol d-flex justify-content-center">
+                            <label class="h4 mb-2 text-white" for="name">
+                                Name
+                            </label>
+                        </div>
+                        <input class="form-control" id="name" name="name" th:placeholder="*{name}"
+                               type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-holder textCol d-flex justify-content-center">
+                            <label class="h4 mb-2 text-white"
+                                   for="currentCapacity">
+                                Current Capacity
+                            </label>
+                        </div>
+                        <input class="form-control" id="currentCapacity" name="currentCapacity"
+                               th:value="*{currCapacity}" type="text" readonly/>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-holder textCol d-flex justify-content-center">
+                            <label class="h4 mb-2 text-white"
+                                   for="maxCapacity">
+                                Maximum Capacity
+                            </label>
+                        </div>
+                        <input class="form-control" id="maxCapacity" name="maxCapacity" th:placeholder="*{maxCapacity}"
+                               type="text"/>
+                    </div>
+                    <div class="form-group">
+                        <div class="label-holder textCol d-flex justify-content-center">
+                            <label class="h4 mb-2 text-white"
+                                   for="temperature">
+                                Temperature
+                            </label>
+                        </div>
+                        <input class="form-control" id="temperature" name="maxCapacity" th:placeholder="*{#numbers.formatDecimal(temperature,1,2)}"
+                               type="text" readonly/>
+                    </div>
+                    <div class="button-holder d-flex justify-content-center">
+                        <button class="btn btn-primary" name="submit" type="submit">
+                            Edit Warehouse
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+    <th:block th:include="~{fragments/footer}"/>
+</footer>
+</body>
+</html>
