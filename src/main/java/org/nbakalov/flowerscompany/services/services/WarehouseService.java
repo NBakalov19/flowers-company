@@ -19,7 +19,7 @@ public interface WarehouseService {
 
   List<WarehouseServiceModel> findAllWarehouses();
 
-  void deleteWarehouse(String id, WarehouseServiceModel warehouseServiceModel);
+  void deleteWarehouse(String id);
 
   void emptyWarehouse(String id);
 

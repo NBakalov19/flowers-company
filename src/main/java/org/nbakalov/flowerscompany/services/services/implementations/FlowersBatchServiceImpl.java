@@ -130,7 +130,11 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
   @Override
   public void deleteBatch(String id) {
-    flowersBatchRepository.deleteById(id);
+
+    FlowersBatch flowersBatch = flowersBatchRepository.findById(id)
+                    .orElseThrow(() -> new NoResultException("Flower batch not found."));
+
+    flowersBatchRepository.delete(flowersBatch);
   }
 
   private void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,

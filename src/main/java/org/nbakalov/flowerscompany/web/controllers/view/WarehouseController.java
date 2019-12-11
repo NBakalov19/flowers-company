@@ -120,10 +120,7 @@ public class WarehouseController extends BaseController {
   public ModelAndView deleteWarehouseConfirm(@PathVariable String id,
                                            @ModelAttribute WarehouseUpdateModel warehouseUpdateModel) {
 
-    WarehouseServiceModel warehouseServiceModel =
-            modelMapper.map(warehouseUpdateModel, WarehouseServiceModel.class);
-
-    warehouseService.deleteWarehouse(id, warehouseServiceModel);
+    warehouseService.deleteWarehouse(id);
 
     return redirect("/warehouses/all");
   }

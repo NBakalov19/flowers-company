@@ -11,6 +11,7 @@ import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
+import org.nbakalov.flowerscompany.web.models.view.FlowerBatchDeleteViewModel;
 import org.nbakalov.flowerscompany.web.models.view.FlowersBatchViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -117,8 +118,26 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/delete-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView deleteFlowersBatch(@PathVariable String id) {
+  public ModelAndView deleteFlowersBatch(@PathVariable String id, ModelAndView modelAndView) {
 
-    return view("flowers/delete-batch");
+    FlowersBatchServiceModel serviceModel =
+            flowersBatchService.findBatchById(id);
+
+    FlowerBatchDeleteViewModel deleteModel =
+            modelMapper.map(serviceModel, FlowerBatchDeleteViewModel.class);
+
+    modelAndView.addObject("batch", deleteModel);
+
+    return view("flowers/delete-batch", modelAndView);
+  }
+
+  @PostMapping("/delete-batch/{id}")
+  @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  public ModelAndView deleteFlowersBatch(@PathVariable String id,
+                                         @ModelAttribute FlowersBatchUpdateModel updateModel) {
+
+    flowersBatchService.deleteBatch(id);
+
+    return redirect("/flowers/todays-batches");
   }
 }

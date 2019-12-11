@@ -2,12 +2,10 @@ package org.nbakalov.flowerscompany.services.services.implementations;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
 import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
-import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
@@ -77,7 +75,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   }
 
   @Override
-  public void deleteWarehouse(String id, WarehouseServiceModel warehouseServiceModel) {
+  public void deleteWarehouse(String id) {
     Warehouse warehouse = warehouseRepository.findById(id)
             .orElseThrow(() -> new NoResultException("Warehouse not found."));
 
