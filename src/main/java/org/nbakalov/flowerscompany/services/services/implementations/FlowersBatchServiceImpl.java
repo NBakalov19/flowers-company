@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.models.MoveBatchModel;
 import org.nbakalov.flowerscompany.data.repositories.FlowersBatchRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.NoResultException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.TODAY;
@@ -91,6 +93,44 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
             modelMapper.map(serviceModel, FlowersBatch.class));
 
     return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
+  }
+
+  @Override
+  public void moveBatch(String id, MoveBatchModel model) {
+
+    FlowersBatchServiceModel flowersBatchServiceModel = flowersBatchRepository.findById(id)
+            .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
+            .orElseThrow(() -> new NoResultException("Flower batch not found."));
+
+    WarehouseServiceModel oldWarehouse =
+            warehouseService.findWarehouseById(flowersBatchServiceModel.getWarehouse().getId());
+
+    WarehouseServiceModel newWarehouse =
+            warehouseService.findWarehouseById(model.warehouse);
+
+    if (flowersBatchServiceModel.getTrays() + newWarehouse.getCurrCapacity() >= newWarehouse.getMaxCapacity()) {
+      throw new IllegalArgumentException(
+              String.format("No possible to register batch in %s warehouse", newWarehouse.getName()));
+    }
+
+    flowersBatchServiceModel.setWarehouse(newWarehouse);
+
+    Set<FlowersBatchServiceModel> oldWarehouseNewBatches = oldWarehouse.getBatches()
+            .stream()
+            .filter(fb -> !fb.getId().equals(flowersBatchServiceModel.getId()))
+            .collect(Collectors.toSet());
+
+    oldWarehouse.setBatches(oldWarehouseNewBatches);
+    newWarehouse.getBatches().add(flowersBatchServiceModel);
+
+    warehouseService.updateCurrCapacity(oldWarehouse);
+    warehouseService.updateCurrCapacity(newWarehouse);
+
+  }
+
+  @Override
+  public void deleteBatch(String id) {
+    flowersBatchRepository.deleteById(id);
   }
 
   private void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,

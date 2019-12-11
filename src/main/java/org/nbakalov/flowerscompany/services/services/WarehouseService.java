@@ -9,18 +9,20 @@ public interface WarehouseService {
 
   WarehouseServiceModel createWarehouse(WarehouseServiceModel warehouseServiceModel);
 
-  List<WarehouseServiceModel> findAllWarehouses();
+  WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel);
 
   WarehouseServiceModel findWarehouseById(String id);
 
-  WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel);
+  WarehouseServiceModel findWarehouseByName(String name);
+
+  WarehouseServiceModel updateCurrCapacity(WarehouseServiceModel warehouseServiceModel);
+
+  List<WarehouseServiceModel> findAllWarehouses();
 
   void deleteWarehouse(String id, WarehouseServiceModel warehouseServiceModel);
 
   void emptyWarehouse(String id);
 
-  WarehouseServiceModel findWarehouseByName(String name);
-
-  WarehouseServiceModel updateCurrCapacity(WarehouseServiceModel warehouseServiceModel);
+  void moveFlowersBatch(FlowersBatchServiceModel batch,WarehouseServiceModel currentWarehouse, WarehouseServiceModel nextWarehouse);
 }
 

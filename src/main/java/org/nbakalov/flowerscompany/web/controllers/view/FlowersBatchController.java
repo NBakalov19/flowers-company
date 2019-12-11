@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.FlowersBatchCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.FlowersBatchUpdateModel;
+import org.nbakalov.flowerscompany.data.models.models.MoveBatchModel;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
@@ -91,5 +92,33 @@ public class FlowersBatchController extends BaseController {
     flowersBatchService.editFlowerBatch(id, serviceModel);
 
     return redirect("/flowers/todays-batches");
+  }
+
+  @GetMapping("/move-batch/{id}")
+  @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  public ModelAndView moveFlowersBatch(@PathVariable String id, ModelAndView modelAndView) {
+
+    FlowersBatchServiceModel serviceModel =
+            flowersBatchService.findBatchById(id);
+
+    modelAndView.addObject("batch", serviceModel);
+
+    return view("flowers/move-batch", modelAndView);
+  }
+
+  @PostMapping("/move-batch/{id}")
+  @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  public ModelAndView moveFlowersBatchConfirm(@PathVariable String id, @ModelAttribute MoveBatchModel model) {
+
+    flowersBatchService.moveBatch(id, model);
+
+    return redirect("/flowers/todays-batches");
+  }
+
+  @GetMapping("/delete-batch/{id}")
+  @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  public ModelAndView deleteFlowersBatch(@PathVariable String id) {
+
+    return view("flowers/delete-batch");
   }
 }

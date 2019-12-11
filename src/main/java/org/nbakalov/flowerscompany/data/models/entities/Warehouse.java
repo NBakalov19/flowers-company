@@ -31,7 +31,7 @@ public class Warehouse extends BaseEntity {
   @Min(2500)
   private Integer maxCapacity;
 
-  @OneToMany(mappedBy = "warehouse", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "warehouse", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
   private Set<FlowersBatch> batches;
 
 }

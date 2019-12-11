@@ -2,10 +2,12 @@ package org.nbakalov.flowerscompany.services.services.implementations;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
 import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
+import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
@@ -115,6 +117,14 @@ public class WarehouseServiceImpl implements WarehouseService {
     } else {
       throw new IllegalArgumentException("Not Possible To Empty Warehouse.");
     }
+  }
+
+  @Override
+  public void moveFlowersBatch(FlowersBatchServiceModel batch,
+                               WarehouseServiceModel currentWarehouse,
+                               WarehouseServiceModel nextWarehouse) {
+
+
   }
 
   @Override
