@@ -2,6 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseUpdateModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
@@ -20,11 +21,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/warehouses")
-@NoArgsConstructor
 @AllArgsConstructor
 public class WarehouseController extends BaseController {
 
-  private WarehouseService warehouseService;
+  private final WarehouseService warehouseService;
+  private final ModelMapper modelMapper;
 
   @GetMapping("/create-warehouse")
   @PreAuthorize("hasRole('ROLE_ADMIN')")

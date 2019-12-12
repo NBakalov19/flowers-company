@@ -1,7 +1,7 @@
 package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.models.users.UserCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.users.UserEditModel;
 import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserController extends BaseController {
 
-  private UserService userService;
+  private final UserService userService;
+  private final ModelMapper modelMapper;
 
   @GetMapping("/login")
   @PreAuthorize("isAnonymous()")

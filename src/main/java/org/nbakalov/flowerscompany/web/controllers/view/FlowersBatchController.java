@@ -2,6 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchUpdateModel;
@@ -23,12 +24,12 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/flowers")
-@NoArgsConstructor
 @AllArgsConstructor
 public class FlowersBatchController extends BaseController {
 
-  private FlowersBatchService flowersBatchService;
-  private WarehouseService warehouseService;
+  private final FlowersBatchService flowersBatchService;
+  private final WarehouseService warehouseService;
+  private final ModelMapper modelMapper;
 
   @GetMapping("/create-batch")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")

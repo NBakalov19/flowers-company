@@ -2,6 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderCreateModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
@@ -21,11 +22,11 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/orders")
-@NoArgsConstructor
 @AllArgsConstructor
 public class OrderController extends BaseController {
 
-  private OrderService orderService;
+  private final OrderService orderService;
+  private final ModelMapper modelMapper;
 
   @GetMapping("/make-order")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")

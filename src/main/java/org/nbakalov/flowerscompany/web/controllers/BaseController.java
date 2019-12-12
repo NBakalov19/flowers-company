@@ -4,13 +4,8 @@ import lombok.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.servlet.ModelAndView;
 
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-@NoArgsConstructor
-@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BaseController {
-
-  protected ModelMapper modelMapper;
-
 
   protected ModelAndView view(String viewName, ModelAndView modelAndView) {
     modelAndView.setViewName(viewName);

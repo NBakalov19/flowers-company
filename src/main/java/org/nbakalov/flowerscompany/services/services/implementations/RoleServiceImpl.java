@@ -1,18 +1,17 @@
 package org.nbakalov.flowerscompany.services.services.implementations;
 
-import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
-
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
-
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Role;
 import org.nbakalov.flowerscompany.data.repositories.RoleRepository;
 import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.services.RoleService;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -25,9 +24,9 @@ public class RoleServiceImpl implements RoleService {
   @Override
   public void seedRolesInDb() {
     if (roleRepository.count() == 0) {
-      roleRepository.saveAndFlush(new Role(ROLE_CUSTOMER));
+      roleRepository.saveAndFlush(new Role(CUSTOMER));
       roleRepository.saveAndFlush(new Role(OPERATOR));
-      roleRepository.saveAndFlush(new Role(ROLE_ADMIN));
+      roleRepository.saveAndFlush(new Role(ADMIN));
       roleRepository.saveAndFlush(new Role(ROOT));
     }
   }
