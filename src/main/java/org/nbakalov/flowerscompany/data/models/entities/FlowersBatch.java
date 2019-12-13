@@ -38,7 +38,7 @@ public class FlowersBatch extends BaseEntity {
   @Column(name = "date_picked", nullable = false)
   private LocalDate datePicked;
 
-  @ManyToOne(targetEntity = Warehouse.class, fetch = FetchType.LAZY)
+  @ManyToOne(targetEntity = Warehouse.class)
   @JoinColumn(name = "warehouse_id", referencedColumnName = "id", nullable = false)
   private Warehouse warehouse;
 }

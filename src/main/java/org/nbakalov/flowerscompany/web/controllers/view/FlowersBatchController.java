@@ -1,7 +1,6 @@
 package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchCreateModel;
@@ -124,18 +123,17 @@ public class FlowersBatchController extends BaseController {
     FlowersBatchServiceModel serviceModel =
             flowersBatchService.findBatchById(id);
 
-    FlowerBatchDeleteViewModel deleteModel =
+    FlowerBatchDeleteViewModel viewModel =
             modelMapper.map(serviceModel, FlowerBatchDeleteViewModel.class);
 
-    modelAndView.addObject("batch", deleteModel);
+    modelAndView.addObject("batch", viewModel);
 
     return view("flowers/delete-batch", modelAndView);
   }
 
   @PostMapping("/delete-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView deleteFlowersBatch(@PathVariable String id,
-                                         @ModelAttribute FlowersBatchUpdateModel updateModel) {
+  public ModelAndView deleteFlowersBatch(@PathVariable String id) {
 
     flowersBatchService.deleteBatch(id);
 

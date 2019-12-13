@@ -21,44 +21,61 @@
                         <input name="_csrf" type="hidden" value="80417983-fe8b-45c7-963e-31f6915a1562">
                         <div style="width: 240px" class="form-group d-inline-block">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="supervisior" class="h4 mb-2 text-white">Supervisior</label>
+                                <label for="supervisior" class="h4 mb-2 text-white">
+                                    Supervisior
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
                             <input id="supervisior" name="teamSupervisor" th:value="*{teamSupervisor}" type="text"
                                    class="form-control" required="required">
                         </div>
                         <div style="width: 240px" class="form-group d-inline-block">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="field" class="h4 mb-2 text-white">Field</label>
+                                <label for="field" class="h4 mb-2 text-white">
+                                    Field
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
                             <input id="field" name="fieldName" th:value="*{fieldName}" type="text"
                                    class="form-control" required="required">
                         </div>
                         <div class="form-group">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label class="h4 mb-2 text-white" for="variety">Variety</label>
+                                <label class="h4 mb-2 text-white" for="variety">
+                                    Variety
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
-                            <select id="variety" name="variety" class="custom-select " required="required">
-                                <option th:each="variety : ${varieties}"
-                                        th:value="${variety}"
-                                        th:text="${variety.varietyName}">
+                            <select id="variety" name="variety" class="custom-select " required="required"
+                                    th:field="*{variety}">
+                                <option th:each="var : ${varieties}"
+                                        th:value="${var}"
+                                        th:text="${var.varietyName}"
+                                        th:selected="${variety == var}">
                                 </option>
                             </select>
                         </div>
                         <div class="form-group">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="traysCount" class="h4 mb-2 text-white">Trays</label>
+                                <label for="traysCount" class="h4 mb-2 text-white">
+                                    Trays
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
                             <input id="traysCount" name="trays" th:value="*{trays}" type="number"
                                    class="form-control" min="1" required="required">
                         </div>
                         <div class="form-group align-content-center">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label class="h4 mb-2 text-white">Bunches per tray</label>
+                                <label class="h4 mb-2 text-white">
+                                    Bunches per tray
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
                             <div class="radio custom-control custom-radio custom-control-inline">
                                 <input name="bunchesPerTray" id="bunchesPerTray_0" type="radio"
                                        class="custom-control-input" value="10" required="required"
-                                th:checked="*{bunchesPerTray == 10}">
+                                       th:checked="*{bunchesPerTray == 10}">
                                 <label for="bunchesPerTray_0" class="custom-control-label text-white">10</label>
                             </div>
                             <div class="custom-control custom-radio custom-control-inline">

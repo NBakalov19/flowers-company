@@ -43,10 +43,14 @@
                                     && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1563">
                                             <button class="btn btn-primary">OPERATOR</button>
                                         </form>
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1564">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
@@ -55,6 +59,8 @@
                                     && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1564">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
@@ -65,10 +71,14 @@
                                     && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1565">
                                             <button class="btn btn-primary">OPERATOR</button>
                                         </form>
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1566">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
@@ -77,6 +87,8 @@
                                     && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1567">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
@@ -85,6 +97,8 @@
                                     && !#lists.contains(user.authorities, 'ROLE_ROOT')}">
                                         <form class="mx-1" th:method="post"
                                               th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                            <input name="_csrf" type="hidden"
+                                                   value="80417983-fe8b-45c7-963e-31f6915a1568">
                                             <button class="btn btn-primary">OPERATOR</button>
                                         </form>
                                     </th:block>

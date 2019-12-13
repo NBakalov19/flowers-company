@@ -12,8 +12,7 @@
     <div class="container">
         <div style="width: 1200px" class="pt-5 mt-5">
             <th:block th:if="${#lists.size(orders) != 0}">
-                <h1 class="text-center text-light">
-                    <span th:text="${#authentication.getName()}"></span>`s Orders</h1>
+                <h1 class="text-center text-light">Review Orders</h1>
                 <hr class="style13">
                 <table style="text-shadow: none" class="table table-hover bg-light">
                     <thead>
@@ -24,7 +23,6 @@
                         <th class="col-md-1 text-center text-dark font-weight-bold">Quantity</th>
                         <th class="col-md-1 text-center text-dark font-weight-bold">Bunches Per Tray</th>
                         <th class="col-md-2 text-center text-dark font-weight-bold">Order Date</th>
-                        <th class="col-md-2 text-center text-dark font-weight-bold">Finished On</th>
                         <th class="col-md-1 text-center text-dark font-weight-bold">Status</th>
                         <th class="col-md-2 text-center text-dark font-weight-bold">Actions</th>
                     </tr>
@@ -43,31 +41,25 @@
                             <td class="col-md-1 text-center text-dark" th:text="*{bunchesPerTray}">${}</td>
                             <td class="col-md-2 text-center text-dark"
                                 th:text="*{#temporals.format(orderDate, 'dd-MM-yyyy')}"></td>
-                            <td class="col-md-2 text-center text-dark"
-                                th:text="*{finishedOn != null}
-                                        ? *{#temporals.format(finishedOn, 'dd-MM-yyyy')}
-                                        : ''"></td>
                             <td class="col-md-1 text-center text-dark" th:text="*{status}"></td>
-                            <td class="col-md-2 text-center text-dark">
+                            <td class="col-md-3 text-center text-dark">
                                 <div class="row justify-content-center">
-                                    <th:block th:if="*{status == 'In progress'}">
-                                        <a th:href="@{/orders/edit-order/{id}(id=*{id})}"
-                                           class="btn btn-warning text-light mx-1">Edit</a>
-                                        <a th:href="@{/orders/cancel-order/{id}(id=*{id})}"
-                                           class="btn btn-danger text-light mx-1">Cancel</a>
-                                    </th:block>
+                                    <form class="mx-1" th:action="@{/orders/review-order/{id}(id=*{id})}"
+                                          th:method="post">
+                                        <input name="_csrf" type="hidden"
+                                               value="80417983-fe8b-45c7-963e-31f6915a1568">
+                                        <button class="btn btn-primary">Review</button>
+                                    </form>
                                 </div>
                             </td>
                         <tr>
                     </th:block>
                     </tbody>
                 </table>
+                <hr class="style13 w-100">
             </th:block>
             <th:block th:unless="${#lists.size(orders) != 0}">
-                <h1 class="text-center text-light">You didn`t made order</h1>
-                <div class="button-holder d-flex justify-content-center">
-                    <a th:href="@{/orders/make-order}" class="btn btn-primary">Make one</a>
-                </div>
+                <h1 class="text-center text-light">They are no orders to review</h1>
             </th:block>
             <hr class="style13 w-100">
         </div>

@@ -13,7 +13,6 @@ import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,7 +30,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   @Override
   public FlowersBatchServiceModel registerBatch(FlowersBatchServiceModel flowersBatchServiceModel) {
 
-    flowersBatchServiceModel.setDatePicked(LocalDate.now());
+    flowersBatchServiceModel.setDatePicked(TODAY);
 
     WarehouseServiceModel warehouseServiceModel = flowersBatchServiceModel.getWarehouse();
 
@@ -54,6 +53,23 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   }
 
   @Override
+  public List<FlowersBatchServiceModel> findAllBatchesByVarietyAndBunchesPerTray(Variety variety, Integer bunchesPerTray) {
+    return flowersBatchRepository
+            .findAllByVarietyAndBunchesPerTrayOrderByTraysDesc(variety, bunchesPerTray)
+            .stream()
+            .map(batch -> modelMapper.map(batch, FlowersBatchServiceModel.class))
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<FlowersBatchServiceModel> findAllBatchesByBunchesPerTray(Integer bunchesPerTray) {
+    return flowersBatchRepository.findAllByBunchesPerTrayOrderByTrays(bunchesPerTray)
+            .stream()
+            .map(batch -> modelMapper.map(batch, FlowersBatchServiceModel.class))
+            .collect(Collectors.toList());
+  }
+
+  @Override
   public FlowersBatchServiceModel findBatchById(String id) {
 
     return flowersBatchRepository.findById(id)
@@ -69,27 +85,13 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
                     .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
                     .orElseThrow(() -> new NoResultException("Flower batch not found."));
 
+    hasRoomInWarehouse(serviceModel.getWarehouse(), updateModel);
 
-    serviceModel.setTeamSupervisor(
-            updateSupervisior(updateModel.getTeamSupervisor(), serviceModel.getTeamSupervisor()));
-
-    serviceModel.setFieldName(
-            updateField(updateModel.getFieldName(), serviceModel.getFieldName()));
-
-    serviceModel.setVariety(
-            updateVariety(updateModel.getVariety(), serviceModel.getVariety()));
-
-    serviceModel.setBunchesPerTray(
-            updateBunches(updateModel.getBunchesPerTray(), serviceModel.getBunchesPerTray()));
-
-
-    if (updateModel.getTrays() == 0) {
-      throw new IllegalArgumentException("Trays count can`t be zero");
-    }
-
+    serviceModel.setTeamSupervisor(updateModel.getTeamSupervisor());
+    serviceModel.setFieldName(updateModel.getFieldName());
+    serviceModel.setVariety(updateModel.getVariety());
     serviceModel.setTrays(updateModel.getTrays());
-
-    hasRoomInWarehouse(serviceModel.getWarehouse(), serviceModel);
+    serviceModel.setBunchesPerTray(updateModel.getBunchesPerTray());
 
     FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
             modelMapper.map(serviceModel, FlowersBatch.class));
@@ -136,7 +138,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     FlowersBatch flowersBatch = flowersBatchRepository.findById(id)
             .orElseThrow(() -> new NoResultException("Flower batch not found."));
 
-    flowersBatchRepository.delete(flowersBatch);
+    flowersBatchRepository.deleteById(id);
   }
 
   private void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,
@@ -148,33 +150,5 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
       throw new IllegalArgumentException(
               String.format("No possible to register batch in %s warehouse", warehouseServiceModel.getName()));
     }
-  }
-
-  private Integer updateBunches(Integer newBunchesPerTray, Integer currBunchesPerTray) {
-
-    return currBunchesPerTray.equals(newBunchesPerTray)
-            ? currBunchesPerTray
-            : newBunchesPerTray;
-  }
-
-  private Variety updateVariety(Variety newVariety, Variety currVariety) {
-
-    return currVariety.getVarietyName().equals(newVariety.getVarietyName())
-            ? currVariety
-            : newVariety;
-  }
-
-  private String updateSupervisior(String newSupervisor, String currSupervisor) {
-
-    return currSupervisor.equals(newSupervisor)
-            ? currSupervisor
-            : newSupervisor;
-  }
-
-  private String updateField(String newFieldName, String currFieldName) {
-
-    return currFieldName.equals(newFieldName)
-            ? currFieldName
-            : newFieldName;
   }
 }

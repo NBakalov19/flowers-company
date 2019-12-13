@@ -1,0 +1,73 @@
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="~{fragments/head}"/>
+    <link rel="stylesheet"
+          th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+</head>
+<body>
+<header>
+    <th:block th:include="~{fragments/navbar}"/>
+</header>
+<main class="mt-3">
+    <div class="container">
+        <div class="pt-5 mt-5">
+            <div class="container-1">
+                <h2 class="text-center text-light">Cancel Order</h2>
+                <hr class="style13 w-100">
+                <div class="d-flex justify-content-center align-content-center container">
+                    <form class="mx-auto" th:method="post" th:object="${order}"
+                          th:action="@{/orders/cancel-order/{id}(id=*{id})}">
+                        <input name="_csrf" type="hidden" value="80417983-fe8b-45c7-963e-31f6915a1522">
+                        <div class="form-group">
+                            <div class="label-holder textCol d-flex justify-content-center">
+                                <label class="h4 mb-2 text-white" for="variety">Variety</label>
+                            </div>
+                            <input type="text" class="form-control" id="customer" th:value="*{customer}"
+                                   readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-holder textCol d-flex justify-content-center">
+                                <label class="h4 mb-2 text-white" for="variety">Variety</label>
+                            </div>
+                            <input type="text" class="form-control" id="variety" th:value="*{variety}"
+                                   readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-holder textCol d-flex justify-content-center">
+                                <label for="quantity" class="h4 mb-2 text-white">Quantity</label>
+                            </div>
+                            <input id="quantity" th:value="*{quantity}" type="number"
+                                   class="form-control" readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-holder text-white d-flex justify-content-center">
+                                <label for="bunchPerTray" class="h3 mb-2">Bunches Per Tray</label>
+                            </div>
+                            <input type="text" class="form-control" id="bunchPerTray" th:value="*{bunchesPerTray}"
+                                   readonly="readonly">
+                        </div>
+                        <div class="form-group">
+                            <div class="label-holder text-white d-flex justify-content-center">
+                                <label for="orderDate" class="h3 mb-2">Order Date</label>
+                            </div>
+                            <input type="text" class="form-control" id="orderDate"
+                                   th:value="*{#temporals.format(orderDate, 'dd-MM-yyyy')}"
+                                   readonly="readonly">
+                        </div>
+                        <div class="button-holder d-flex justify-content-center">
+                            <div>
+                                <button name="submit" type="submit" class="btn btn-danger">Cancel Order</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+    <th:block th:include="~{fragments/footer}"/>
+</footer>
+</body>
+</html>

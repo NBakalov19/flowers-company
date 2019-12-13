@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.web.models.api;
+package org.nbakalov.flowerscompany.web.models.view;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,11 +9,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MyOrdersApiModel {
+public class OrderViewModel {
+
+  private String id;
   private String customer;
   private String variety;
   private Integer quantity;
-  private Integer bunchesInTray;
+  private Integer bunchesPerTray;
   private LocalDate orderDate;
   private LocalDate finishedOn;
   private String status;

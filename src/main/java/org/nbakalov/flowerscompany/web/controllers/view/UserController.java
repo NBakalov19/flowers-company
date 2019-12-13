@@ -3,7 +3,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.models.users.UserCreateModel;
-import org.nbakalov.flowerscompany.data.models.models.users.UserEditModel;
+import org.nbakalov.flowerscompany.data.models.models.users.UserUpdateModel;
 import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.services.UserService;
@@ -81,7 +81,7 @@ public class UserController extends BaseController {
 
   @PostMapping("/edit")
   @PreAuthorize("isAuthenticated()")
-  public ModelAndView editProfileConfirm(@ModelAttribute UserEditModel model) {
+  public ModelAndView editProfileConfirm(@ModelAttribute UserUpdateModel model) {
 
     if (!model.getPassword().equals(model.getConfirmPassword())) {
       return view("/users/edit-profile");

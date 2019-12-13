@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.data.models.models.flowers;
+package org.nbakalov.flowerscompany.data.models.models.orders;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,11 +8,9 @@ import org.nbakalov.flowerscompany.data.models.entities.Variety;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FlowersBatchUpdateModel {
+public class OrderUpdateModel {
 
-  private String teamSupervisor;
-  private String fieldName;
   private Variety variety;
-  private Integer trays;
+  private Integer quantity;
   private Integer bunchesPerTray;
 }

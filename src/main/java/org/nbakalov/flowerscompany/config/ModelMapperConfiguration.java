@@ -7,7 +7,8 @@ import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
-import org.nbakalov.flowerscompany.web.models.api.MyOrdersApiModel;
+import org.nbakalov.flowerscompany.web.models.view.OrderCancelViewModel;
+import org.nbakalov.flowerscompany.web.models.view.OrderViewModel;
 import org.nbakalov.flowerscompany.web.models.api.TodayFlowersBatchApiModel;
 import org.nbakalov.flowerscompany.web.models.view.FlowerBatchDeleteViewModel;
 import org.springframework.context.annotation.Bean;
@@ -39,14 +40,6 @@ public class ModelMapperConfiguration {
                                     FlowersBatchServiceModel::getWarehouse,
                                     TodayFlowersBatchApiModel::setWarehouse));
 
-    modelMapper.createTypeMap(
-            FlowersBatchServiceModel.class, FlowersBatchUpdateModel.class)
-            .addMappings(map ->
-                    map.using(warehouseServiceModelStringConverter)
-                            .map(
-                                    FlowersBatchServiceModel::getWarehouse,
-                                    FlowersBatchUpdateModel::setWarehouse));
-
     modelMapper
             .createTypeMap(FlowersBatchServiceModel.class, FlowerBatchDeleteViewModel.class)
             .addMappings(map ->
@@ -56,12 +49,21 @@ public class ModelMapperConfiguration {
                                     FlowerBatchDeleteViewModel::setWarehouse));
 
     modelMapper
-            .createTypeMap(OrderServiceModel.class, MyOrdersApiModel.class)
+            .createTypeMap(OrderServiceModel.class, OrderViewModel.class)
             .addMappings(map ->
                     map.using(userServiceModelStringConverter)
                             .map(
                                     OrderServiceModel::getCustomer,
-                                    MyOrdersApiModel::setCustomer
+                                    OrderViewModel::setCustomer
+                            ));
+
+    modelMapper
+            .createTypeMap(OrderServiceModel.class, OrderCancelViewModel.class)
+            .addMappings(map ->
+                    map.using(userServiceModelStringConverter)
+                            .map(
+                                    OrderServiceModel::getCustomer,
+                                    OrderCancelViewModel::setCustomer
                             ));
   }
 

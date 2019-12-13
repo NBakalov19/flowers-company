@@ -6,6 +6,7 @@ import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
+import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
@@ -59,8 +60,6 @@ public class WarehouseServiceImpl implements WarehouseService {
   @Override
   public WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel) {
 
-    //TODO TEST
-
     Warehouse warehouse = warehouseRepository.findById(id)
             .orElseThrow(() -> new NoResultException("Warehouse not found."));
 
@@ -84,8 +83,6 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   @Override
   public void emptyWarehouse(String id) {
-
-    //TODO TEST AFTER CREATE BATCHES
 
     if (warehouseRepository.count() == 1) {
       throw new IllegalArgumentException("Not Possible To Empty Warehouse");

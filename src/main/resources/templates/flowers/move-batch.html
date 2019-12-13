@@ -18,7 +18,10 @@
                     <form class="mx-auto" th:action="@{/flowers/move-batch/{id}(id=${batch.id})}" th:method="post">
                         <div class="form-group">
                             <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="warehouse" class="h4 mb-2 text-white">Select Warehouse</label>
+                                <label for="warehouse" class="h4 mb-2 text-white">
+                                    Select Warehouse
+                                    <span class="asteriskField">*</span>
+                                </label>
                             </div>
                             <select id="warehouse" name="warehouse" class="custom-select"></select>
                         </div>

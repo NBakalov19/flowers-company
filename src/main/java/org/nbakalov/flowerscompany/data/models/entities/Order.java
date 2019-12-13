@@ -25,8 +25,8 @@ public class Order extends BaseEntity {
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
 
-  @Column(name = "bunches_in_tray", nullable = false)
-  private Integer bunchesInTray;
+  @Column(name = "bunches_per_tray", nullable = false)
+  private Integer bunchesPerTray;
 
   @Column(name = "order_date", nullable = false, updatable = false)
   private LocalDate orderDate;

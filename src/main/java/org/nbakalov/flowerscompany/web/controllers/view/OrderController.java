@@ -1,19 +1,19 @@
 package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderCreateModel;
+import org.nbakalov.flowerscompany.data.models.models.orders.OrderUpdateModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.services.OrderService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
+import org.nbakalov.flowerscompany.web.models.view.OrderCancelViewModel;
+import org.nbakalov.flowerscompany.web.models.view.OrderEditViewModel;
+import org.nbakalov.flowerscompany.web.models.view.OrderViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
@@ -52,8 +52,95 @@ public class OrderController extends BaseController {
 
   @GetMapping("/my-orders")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-  public ModelAndView myOrders() {
+  public ModelAndView myOrders(Principal principal, ModelAndView modelAndView) {
 
-    return view("/orders/my-orders");
+    List<OrderViewModel> myOrders =
+            orderService.findAllMyOrders(principal.getName())
+                    .stream()
+                    .map(orderServiceModel ->
+                            modelMapper.map(orderServiceModel, OrderViewModel.class))
+                    .collect(Collectors.toList());
+
+    modelAndView.addObject("orders", myOrders);
+
+    return view("/orders/my-orders", modelAndView);
+  }
+
+  @GetMapping("/edit-order/{id}")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public ModelAndView editOrder(@PathVariable String id, ModelAndView modelAndView) {
+
+    OrderServiceModel serviceModel = orderService.findOrderById(id);
+
+    OrderEditViewModel viewModel = modelMapper.map(serviceModel, OrderEditViewModel.class);
+
+    modelAndView.addObject("order", viewModel);
+
+    List<Variety> varieties = Variety.stream().collect(Collectors.toList());
+    modelAndView.addObject("varieties", varieties);
+
+    return view("/orders/edit-order", modelAndView);
+  }
+
+  @PostMapping("/edit-order/{id}")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public ModelAndView editOrderConfirm(@PathVariable String id,
+                                       @ModelAttribute OrderUpdateModel updateModel) {
+
+    OrderServiceModel serviceModel =
+            modelMapper.map(updateModel, OrderServiceModel.class);
+
+    orderService.editOrder(id, serviceModel);
+
+    return redirect("/orders/my-orders");
+  }
+
+  @GetMapping("/cancel-order/{id}")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public ModelAndView cancelOrder(@PathVariable String id, ModelAndView modelAndView) {
+
+    OrderServiceModel serviceModel =
+            orderService.findOrderById(id);
+
+    OrderCancelViewModel viewModel =
+            modelMapper.map(serviceModel, OrderCancelViewModel.class);
+
+    modelAndView.addObject("order", viewModel);
+
+    return view("/orders/cancel-order", modelAndView);
+  }
+
+  @PostMapping("/cancel-order/{id}")
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  public ModelAndView cancelOrderConfirm(@PathVariable String id) {
+
+    orderService.cancelOrder(id);
+
+    return redirect("/orders/my-orders");
+  }
+
+  @GetMapping("/all")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ModelAndView allOrders(ModelAndView modelAndView) {
+
+    List<OrderViewModel> findAllOrders =
+            orderService.findAllOrders()
+                    .stream()
+                    .map(orderServiceModel ->
+                            modelMapper.map(orderServiceModel, OrderViewModel.class))
+                    .collect(Collectors.toList());
+
+    modelAndView.addObject("orders", findAllOrders);
+
+    return view("/orders/all-orders", modelAndView);
+  }
+
+  @PostMapping("/review-order/{id}")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public ModelAndView reviewOrder(@PathVariable String id) {
+
+    orderService.reviewOrder(id);
+
+    return redirect("/orders/all");
   }
 }

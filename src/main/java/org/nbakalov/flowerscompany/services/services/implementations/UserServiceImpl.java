@@ -1,14 +1,6 @@
 package org.nbakalov.flowerscompany.services.services.implementations;
 
-import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
-import static org.nbakalov.flowerscompany.constants.UserConstants.*;
-
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
-
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.User;
 import org.nbakalov.flowerscompany.data.repositories.UserRepository;
@@ -19,6 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
+import static org.nbakalov.flowerscompany.constants.UserConstants.*;
 
 @Service
 @AllArgsConstructor

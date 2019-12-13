@@ -7,7 +7,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UserEditModel {
+public class UserUpdateModel {
 
   private String username;
   private String oldPassword;
