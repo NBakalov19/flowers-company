@@ -46,6 +46,7 @@
                                 </label>
                             </div>
                             <select id="variety" name="variety" class="custom-select " required="required">
+                                <option disabled selected value>Select Variety</option>
                                 <option th:each="variety : ${varieties}"
                                         th:value="${variety}"
                                         th:text="${variety.varietyName}">

@@ -48,20 +48,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    return userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
-  }
-
-  @Override
-  public UserServiceModel findByUsername(String username) {
-    return userRepository.findByUsername(username)
-            .map(user -> modelMapper.map(user, UserServiceModel.class))
-            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
-  }
-
-  @Override
   public UserServiceModel editUserProfile(UserServiceModel userServiceModel, String oldPassword) {
+
     User user = userRepository.findByUsername(userServiceModel.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
 
@@ -75,7 +63,16 @@ public class UserServiceImpl implements UserService {
 
     user.setEmail(userServiceModel.getEmail());
 
-    return modelMapper.map(userRepository.saveAndFlush(user), UserServiceModel.class);
+    userRepository.saveAndFlush(user);
+
+    return modelMapper.map(user, UserServiceModel.class);
+  }
+
+  @Override
+  public UserServiceModel findByUsername(String username) {
+    return userRepository.findByUsername(username)
+            .map(user -> modelMapper.map(user, UserServiceModel.class))
+            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
   }
 
   @Override
@@ -104,5 +101,11 @@ public class UserServiceImpl implements UserService {
     }
 
     userRepository.saveAndFlush(modelMapper.map(userServiceModel, User.class));
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
   }
 }

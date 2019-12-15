@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.TODAY;
+import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -45,6 +45,37 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   }
 
   @Override
+  public FlowersBatchServiceModel editFlowerBatch(String id, FlowersBatchServiceModel updateModel) {
+
+    FlowersBatchServiceModel serviceModel =
+            flowersBatchRepository.findById(id)
+                    .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
+                    .orElseThrow(() -> new NoResultException("Flower batch not found."));
+
+    hasRoomInWarehouse(serviceModel.getWarehouse(), updateModel);
+
+    serviceModel.setTeamSupervisor(updateModel.getTeamSupervisor());
+    serviceModel.setFieldName(updateModel.getFieldName());
+    serviceModel.setVariety(updateModel.getVariety());
+    serviceModel.setTrays(updateModel.getTrays());
+    serviceModel.setBunchesPerTray(updateModel.getBunchesPerTray());
+
+    FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
+            modelMapper.map(serviceModel, FlowersBatch.class));
+
+    return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
+  }
+
+  @Override
+  public FlowersBatchServiceModel findBatchById(String id) {
+
+    return flowersBatchRepository.findById(id)
+            .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
+            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
+  }
+
+
+  @Override
   public List<FlowersBatchServiceModel> findAllBatchesRegisteredToday() {
     return flowersBatchRepository.findAllByDatePicked(TODAY)
             .stream()
@@ -70,41 +101,11 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   }
 
   @Override
-  public FlowersBatchServiceModel findBatchById(String id) {
-
-    return flowersBatchRepository.findById(id)
-            .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .orElseThrow(() -> new NoResultException("Flower batch not found."));
-  }
-
-  @Override
-  public FlowersBatchServiceModel editFlowerBatch(String id, FlowersBatchServiceModel updateModel) {
-
-    FlowersBatchServiceModel serviceModel =
-            flowersBatchRepository.findById(id)
-                    .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-                    .orElseThrow(() -> new NoResultException("Flower batch not found."));
-
-    hasRoomInWarehouse(serviceModel.getWarehouse(), updateModel);
-
-    serviceModel.setTeamSupervisor(updateModel.getTeamSupervisor());
-    serviceModel.setFieldName(updateModel.getFieldName());
-    serviceModel.setVariety(updateModel.getVariety());
-    serviceModel.setTrays(updateModel.getTrays());
-    serviceModel.setBunchesPerTray(updateModel.getBunchesPerTray());
-
-    FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
-            modelMapper.map(serviceModel, FlowersBatch.class));
-
-    return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
-  }
-
-  @Override
   public void moveBatch(String id, MoveBatchModel model) {
 
     FlowersBatchServiceModel flowersBatchServiceModel = flowersBatchRepository.findById(id)
             .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .orElseThrow(() -> new NoResultException("Flower batch not found."));
+            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
 
     WarehouseServiceModel oldWarehouse =
             warehouseService.findWarehouseById(flowersBatchServiceModel.getWarehouse().getId());
@@ -114,7 +115,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     if (flowersBatchServiceModel.getTrays() + newWarehouse.getCurrCapacity() >= newWarehouse.getMaxCapacity()) {
       throw new IllegalArgumentException(
-              String.format("No possible to register batch in %s warehouse", newWarehouse.getName()));
+              String.format(NOT_POSSIBLE_TO_REGISTER, newWarehouse.getName()));
     }
 
     flowersBatchServiceModel.setWarehouse(newWarehouse);
@@ -135,8 +136,8 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   @Override
   public void deleteBatch(String id) {
 
-    FlowersBatch flowersBatch = flowersBatchRepository.findById(id)
-            .orElseThrow(() -> new NoResultException("Flower batch not found."));
+    flowersBatchRepository.findById(id)
+            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
 
     flowersBatchRepository.deleteById(id);
   }
@@ -148,7 +149,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     if (currCapacity + flowersBatchServiceModel.getTrays() > warehouseServiceModel.getMaxCapacity()) {
       throw new IllegalArgumentException(
-              String.format("No possible to register batch in %s warehouse", warehouseServiceModel.getName()));
+              String.format(NOT_POSSIBLE_TO_REGISTER, warehouseServiceModel.getName()));
     }
   }
 }

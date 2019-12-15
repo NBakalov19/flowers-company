@@ -14,7 +14,7 @@ public class UserServiceModel extends BaseServiceModel {
   private String username;
   private String password;
   private String email;
-  private String fullName;
+  private String profilePictureUrl;
   private Set<RoleServiceModel> authorities;
 
 }

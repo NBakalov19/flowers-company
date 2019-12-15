@@ -12,7 +12,7 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, String> {
 
 
-  List<Order> findAllByCustomerOrderByOrderDateDescQuantityDesc(User customer);
+  List<Order> findAllByCustomerOrderByOrderDateTimeDescQuantityDesc(User customer);
 
-  List<Order> findAllByOrderByOrderDateDescQuantityDesc();
+  List<Order> findAllByOrderByOrderDateTimeDescQuantityDesc();
 }

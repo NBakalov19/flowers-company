@@ -17,18 +17,12 @@ import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
 @AllArgsConstructor
 public class RoleServiceImpl implements RoleService {
 
-
   private final RoleRepository roleRepository;
   private final ModelMapper modelMapper;
 
   @Override
-  public void seedRolesInDb() {
-    if (roleRepository.count() == 0) {
-      roleRepository.saveAndFlush(new Role(CUSTOMER));
-      roleRepository.saveAndFlush(new Role(OPERATOR));
-      roleRepository.saveAndFlush(new Role(ADMIN));
-      roleRepository.saveAndFlush(new Role(ROOT));
-    }
+  public RoleServiceModel findByAuthority(String authority) {
+    return modelMapper.map(roleRepository.findByAuthority(authority), RoleServiceModel.class);
   }
 
   @Override
@@ -40,7 +34,12 @@ public class RoleServiceImpl implements RoleService {
   }
 
   @Override
-  public RoleServiceModel findByAuthority(String authority) {
-    return modelMapper.map(roleRepository.findByAuthority(authority), RoleServiceModel.class);
+  public void seedRolesInDb() {
+    if (roleRepository.count() == 0) {
+      roleRepository.saveAndFlush(new Role(CUSTOMER));
+      roleRepository.saveAndFlush(new Role(OPERATOR));
+      roleRepository.saveAndFlush(new Role(ADMIN));
+      roleRepository.saveAndFlush(new Role(ROOT));
+    }
   }
 }

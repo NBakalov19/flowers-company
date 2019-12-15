@@ -51,13 +51,15 @@
                             <div class="label-holder text-white d-flex justify-content-center">
                                 <label for="bunchPerTray" class="h3 mb-2">Bunches Per Tray</label>
                             </div>
-                            <input type="text" class="form-control" id="bunchPerTray" th:value="*{bunchesPerTray}">
+                            <input type="text" class="form-control" id="bunchPerTray" th:value="*{bunchesPerTray}"
+                                   readonly="readonly">
                         </div>
                         <div class="form-group">
                             <div class="label-holder text-white d-flex justify-content-center">
                                 <label for="warehouse" class="h3 mb-2">Warehouse</label>
                             </div>
-                            <input type="text" class="form-control" id="warehouse" th:value="*{warehouse}">
+                            <input type="text" class="form-control" id="warehouse" th:value="*{warehouse}"
+                            readonly="readonly">
                         </div>
                         <div class="button-holder d-flex justify-content-center">
                             <div>

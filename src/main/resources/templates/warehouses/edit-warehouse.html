@@ -18,6 +18,7 @@
                         <div class="label-holder textCol d-flex justify-content-center">
                             <label class="h4 mb-2 text-white" for="name">
                                 Name
+                                <span class="asteriskField">*</span>
                             </label>
                         </div>
                         <input class="form-control" id="name" name="name" th:placeholder="*{name}"
@@ -28,6 +29,7 @@
                             <label class="h4 mb-2 text-white"
                                    for="currentCapacity">
                                 Current Capacity
+                                <span class="asteriskField">*</span>
                             </label>
                         </div>
                         <input class="form-control" id="currentCapacity" name="currentCapacity"
@@ -38,6 +40,7 @@
                             <label class="h4 mb-2 text-white"
                                    for="maxCapacity">
                                 Maximum Capacity
+                                <span class="asteriskField">*</span>
                             </label>
                         </div>
                         <input class="form-control" id="maxCapacity" name="maxCapacity" th:placeholder="*{maxCapacity}"
@@ -48,9 +51,11 @@
                             <label class="h4 mb-2 text-white"
                                    for="temperature">
                                 Temperature
+                                <span class="asteriskField">*</span>
                             </label>
                         </div>
-                        <input class="form-control" id="temperature" name="maxCapacity" th:placeholder="*{#numbers.formatDecimal(temperature,1,2)}"
+                        <input class="form-control" id="temperature" name="maxCapacity"
+                               th:placeholder="*{#numbers.formatDecimal(temperature,1,2)}"
                                type="text" readonly/>
                     </div>
                     <div class="button-holder d-flex justify-content-center">

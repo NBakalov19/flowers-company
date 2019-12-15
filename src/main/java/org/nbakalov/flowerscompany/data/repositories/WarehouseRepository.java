@@ -11,11 +11,9 @@ import java.util.Optional;
 @Repository
 public interface WarehouseRepository extends JpaRepository<Warehouse, String> {
 
-  Optional<Warehouse> findByName(String name);
-
   Warehouse findFirstByOrderByCurrCapacityAsc();
 
   @Override
-  @Query("select w from Warehouse as w order by w.name")
+  @Query("select w from Warehouse as w order by w.maxCapacity desc")
   List<Warehouse> findAll();
 }

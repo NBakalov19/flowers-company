@@ -1,4 +1,4 @@
-fetch('/warehouses/api/all')
+fetch('/api/warehouses/all')
     .then((response) => response.json())
     .then((json) => {
 

@@ -6,7 +6,6 @@ import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
-import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
@@ -49,10 +48,15 @@ public class WarehouseServiceImpl implements WarehouseService {
   }
 
   @Override
+  public Long getWarehousesCount() {
+    return warehouseRepository.count();
+  }
+
+  @Override
   public WarehouseServiceModel findWarehouseById(String id) {
     return warehouseRepository.findById(id)
             .map(warehouse -> modelMapper.map(warehouse, WarehouseServiceModel.class))
-            .orElseThrow(() -> new NoResultException("Warehouse not found."));
+            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
 
     //TODO EXCEPTION
   }
@@ -61,7 +65,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   public WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel) {
 
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException("Warehouse not found."));
+            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
 
     Set<FlowersBatchServiceModel> batches = warehouse.getBatches()
             .stream()
@@ -76,7 +80,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   @Override
   public void deleteWarehouse(String id) {
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException("Warehouse not found."));
+            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
 
     warehouseRepository.delete(warehouse);
   }
@@ -85,12 +89,12 @@ public class WarehouseServiceImpl implements WarehouseService {
   public void emptyWarehouse(String id) {
 
     if (warehouseRepository.count() == 1) {
-      throw new IllegalArgumentException("Not Possible To Empty Warehouse");
+      throw new IllegalArgumentException(NOT_POSSIBLE_TO_EMPTY);
       //TODO NotPossibleToEmptyWarehouseException
     }
 
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException("Warehouse not found."));
+            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
 
     Warehouse emptiestWarehouse = warehouseRepository.findFirstByOrderByCurrCapacityAsc();
 
@@ -110,17 +114,8 @@ public class WarehouseServiceImpl implements WarehouseService {
       updateCurrCapacity(modelMapper.map(emptiestWarehouse, WarehouseServiceModel.class));
 
     } else {
-      throw new IllegalArgumentException("Not Possible To Empty Warehouse.");
+      throw new IllegalArgumentException(NOT_POSSIBLE_TO_EMPTY);
     }
-  }
-
-  @Override
-  public WarehouseServiceModel findWarehouseByName(String name) {
-    return warehouseRepository.findByName(name)
-            .map(warehouse -> modelMapper.map(warehouse, WarehouseServiceModel.class))
-            .orElseThrow(() -> new NoResultException("Warehouse not found."));
-
-    //TODO EXCEPTION
   }
 
   @Override

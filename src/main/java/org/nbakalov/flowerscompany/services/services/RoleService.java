@@ -6,9 +6,9 @@ import java.util.Set;
 
 public interface RoleService {
 
-  void seedRolesInDb();
+  RoleServiceModel findByAuthority(String authority);
 
   Set<RoleServiceModel> findAllRoles();
 
-  RoleServiceModel findByAuthority(String authority);
+  void seedRolesInDb();
 }

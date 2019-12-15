@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.web.models.view;
+package org.nbakalov.flowerscompany.web.models.view.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import java.util.Set;
 public class AllUsersViewModel {
 
   private String id;
+  private String profilePictureUrl;
   private String username;
   private String email;
-  private String fullName;
   private Set<String> authorities;
 }

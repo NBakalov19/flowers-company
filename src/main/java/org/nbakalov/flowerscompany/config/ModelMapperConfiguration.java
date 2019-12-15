@@ -2,15 +2,14 @@ package org.nbakalov.flowerscompany.config;
 
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchUpdateModel;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
-import org.nbakalov.flowerscompany.web.models.view.OrderCancelViewModel;
-import org.nbakalov.flowerscompany.web.models.view.OrderViewModel;
+import org.nbakalov.flowerscompany.web.models.view.order.OrderCancelViewModel;
+import org.nbakalov.flowerscompany.web.models.view.order.OrderViewModel;
 import org.nbakalov.flowerscompany.web.models.api.TodayFlowersBatchApiModel;
-import org.nbakalov.flowerscompany.web.models.view.FlowerBatchDeleteViewModel;
+import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowerBatchDeleteViewModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

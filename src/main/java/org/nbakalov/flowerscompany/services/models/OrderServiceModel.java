@@ -7,6 +7,7 @@ import org.nbakalov.flowerscompany.data.models.entities.Status;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -17,7 +18,7 @@ public class OrderServiceModel extends BaseServiceModel {
   private Variety variety;
   private Integer quantity;
   private Integer bunchesPerTray;
-  private LocalDate orderDate;
-  private LocalDate finishedOn;
+  private LocalDateTime orderDate;
+  private LocalDateTime finishedOn;
   private Status status;
 }

@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface FlowersBatchRepository extends JpaRepository<FlowersBatch, String> {
 
-  List<FlowersBatch> findAllByDatePicked(LocalDate date);
+  List<FlowersBatch> findAllByDatePicked(LocalDateTime dateTime);
 
   List<FlowersBatch> findAllByBunchesPerTrayOrderByTrays(Integer bunchesPerTray);
 

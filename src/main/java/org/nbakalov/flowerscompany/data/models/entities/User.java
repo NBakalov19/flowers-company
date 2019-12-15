@@ -3,6 +3,7 @@ package org.nbakalov.flowerscompany.data.models.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.usertype.UserType;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -22,12 +23,11 @@ public class User extends BaseEntity implements UserDetails {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "full_name", nullable = false)
-  private String fullName;
-
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
+  @Column(name = "profile_picture_url", nullable = false)
+  private String profilePictureUrl;
 
   @ManyToMany(targetEntity = Role.class, fetch = FetchType.EAGER)
   @JoinTable(

@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/warehouses/api")
+@RequestMapping("/api/warehouses")
 @AllArgsConstructor
 public class WarehouseApiController {
 

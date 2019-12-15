@@ -2,6 +2,7 @@ package org.nbakalov.flowerscompany.services.services.implementations;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.nbakalov.flowerscompany.constants.FlowersBatchConstants;
 import org.nbakalov.flowerscompany.data.models.entities.Order;
 import org.nbakalov.flowerscompany.data.models.entities.Status;
 import org.nbakalov.flowerscompany.data.models.entities.User;
@@ -18,7 +19,8 @@ import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.TODAY;
+import static org.nbakalov.flowerscompany.constants.OrderConstants.ORDER_NOT_FOUND;
+import static org.nbakalov.flowerscompany.constants.OrderConstants.TODAY;
 import static org.nbakalov.flowerscompany.data.models.entities.Status.APPROVED;
 import static org.nbakalov.flowerscompany.data.models.entities.Status.DENIED;
 
@@ -46,33 +48,6 @@ public class OrderServiceImpl implements OrderService {
     return modelMapper.map(order, OrderServiceModel.class);
   }
 
-  @Override
-  public OrderServiceModel findOrderById(String id) {
-
-    return orderRepository.findById(id)
-            .map(order -> modelMapper.map(order, OrderServiceModel.class))
-            .orElseThrow(() -> new NoResultException("Order not found."));
-  }
-
-  @Override
-  public List<OrderServiceModel> findAllOrders() {
-
-    return orderRepository.findAllByOrderByOrderDateDescQuantityDesc()
-            .stream()
-            .map(order -> modelMapper.map(order, OrderServiceModel.class))
-            .collect(Collectors.toList());
-  }
-
-  @Override
-  public List<OrderServiceModel> findAllMyOrders(String username) {
-
-    User customer = modelMapper.map(userService.findByUsername(username), User.class);
-
-    return orderRepository.findAllByCustomerOrderByOrderDateDescQuantityDesc(customer)
-            .stream()
-            .map(order -> modelMapper.map(order, OrderServiceModel.class))
-            .collect(Collectors.toList());
-  }
 
   @Override
   public OrderServiceModel editOrder(String id, OrderServiceModel updateModel) {
@@ -93,10 +68,38 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
+  public OrderServiceModel findOrderById(String id) {
+
+    return orderRepository.findById(id)
+            .map(order -> modelMapper.map(order, OrderServiceModel.class))
+            .orElseThrow(() -> new NoResultException(ORDER_NOT_FOUND));
+  }
+
+  @Override
+  public List<OrderServiceModel> findAllOrders() {
+
+    return orderRepository.findAllByOrderByOrderDateTimeDescQuantityDesc()
+            .stream()
+            .map(order -> modelMapper.map(order, OrderServiceModel.class))
+            .collect(Collectors.toList());
+  }
+
+  @Override
+  public List<OrderServiceModel> findAllMyOrders(String username) {
+
+    User customer = modelMapper.map(userService.findByUsername(username), User.class);
+
+    return orderRepository.findAllByCustomerOrderByOrderDateTimeDescQuantityDesc(customer)
+            .stream()
+            .map(order -> modelMapper.map(order, OrderServiceModel.class))
+            .collect(Collectors.toList());
+  }
+
+  @Override
   public void cancelOrder(String id) {
 
     Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new NoResultException("Order not found."));
+            .orElseThrow(() -> new NoResultException(ORDER_NOT_FOUND));
 
     orderRepository.delete(order);
   }
@@ -123,13 +126,13 @@ public class OrderServiceImpl implements OrderService {
 
   private void deniesOrder(OrderServiceModel order) {
     order.setStatus(DENIED);
-    order.setFinishedOn(TODAY);
+    order.setFinishedOn(FlowersBatchConstants.TODAY);
     orderRepository.saveAndFlush(modelMapper.map(order, Order.class));
   }
 
   private void approveOrder(OrderServiceModel order) {
     order.setStatus(APPROVED);
-    order.setFinishedOn(TODAY);
+    order.setFinishedOn(FlowersBatchConstants.TODAY);
     orderRepository.saveAndFlush(modelMapper.map(order, Order.class));
   }
 

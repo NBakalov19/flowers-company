@@ -18,47 +18,49 @@
                 <thead>
                 <tr class="row mx-auto">
                     <th class="col-md-1 text-center text-dark font-weight-bold">#</th>
+                    <th class="col-md-1 text-center text-dark font-weight-bold">Image</th>
                     <th class="col-md-2 text-center text-dark font-weight-bold">Username</th>
                     <th class="col-md-2 text-center text-dark font-weight-bold">Email</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Full Name</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Roles</th>
+                    <th class="col-md-3 text-center text-dark font-weight-bold">Roles</th>
                     <th class="col-md-3 text-center text-dark font-weight-bold">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <th:block th:each="user, iter : ${users}">
+                <th:block th:each="user, iter : ${users}" th:object="${user}">
                     <tr class="row mx-auto">
                         <th class="col-md-1 text-center text-dark font-weight-bold" th:text="${iter.index + 1}"></th>
-                        <td class="col-md-2 text-center text-dark" th:text="${user.username}"></td>
-                        <td class="col-md-2 text-center text-dark" th:text="${user.email}"></td>
-                        <td class="col-md-2 text-center text-dark" th:text="${user.fullName}"></td>
-                        <td class="col-md-2 text-center text-dark"
-                            th:text="${#strings.replace(#strings.listJoin(user.authorities, ', '), 'ROLE_', '')}"></td>
+                        <td class="col-md-1 text-center">
+                            <img th:src="*{profilePictureUrl}" width="40" height="40" alt="image">
+                        </td>
+                        <td class="col-md-2 text-center text-dark" th:text="*{username}"></td>
+                        <td class="col-md-2 text-center text-dark" th:text="*{email}"></td>
+                        <td class="col-md-3 text-center text-dark"
+                            th:text="*{#strings.replace(#strings.listJoin(authorities, ', '), 'ROLE_', '')}"></td>
                         <td class="col-md-3 text-center text-dark">
                             <div class="row justify-content-center">
-                                <th:block th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')') and
+                                <th:block th:if="*{#authorization.expression('hasRole(''ROLE_ADMIN'')') and
                                 !#authorization.expression('hasRole(''ROLE_ROOT'')')}">
-                                    <th:block th:if="${#lists.contains(user.authorities, 'ROLE_CUSTOMER')
-                                    && !#lists.contains(user.authorities, 'ROLE_OPERATOR')
-                                    && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
+                                    <th:block th:if="*{#lists.contains(authorities, 'ROLE_CUSTOMER')
+                                    && !#lists.contains(authorities, 'ROLE_OPERATOR')
+                                    && !#lists.contains(authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-operator/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1563">
                                             <button class="btn btn-primary">OPERATOR</button>
                                         </form>
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-admin/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1564">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
 
-                                    <th:block th:if="${#lists.contains(user.authorities, 'ROLE_OPERATOR')
-                                    && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
+                                    <th:block th:if="*{#lists.contains(authorities, 'ROLE_OPERATOR')
+                                    && !#lists.contains(authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-admin/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1564">
                                             <button class="btn btn-primary">ADMIN</button>
@@ -66,37 +68,37 @@
                                     </th:block>
                                 </th:block>
                                 <th:block sec:authorize="hasRole('ROLE_ROOT')">
-                                    <th:block th:if="${#lists.contains(user.authorities, 'ROLE_CUSTOMER')
-                                    && !#lists.contains(user.authorities, 'ROLE_OPERATOR')
-                                    && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
+                                    <th:block th:if="*{#lists.contains(authorities, 'ROLE_CUSTOMER')
+                                    && !#lists.contains(authorities, 'ROLE_OPERATOR')
+                                    && !#lists.contains(authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-operator/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1565">
                                             <button class="btn btn-primary">OPERATOR</button>
                                         </form>
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-admin/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1566">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
 
-                                    <th:block th:if="${#lists.contains(user.authorities, 'ROLE_OPERATOR')
-                                    && !#lists.contains(user.authorities, 'ROLE_ADMIN')}">
+                                    <th:block th:if="*{#lists.contains(authorities, 'ROLE_OPERATOR')
+                                    && !#lists.contains(authorities, 'ROLE_ADMIN')}">
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-admin/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-admin/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1567">
                                             <button class="btn btn-primary">ADMIN</button>
                                         </form>
                                     </th:block>
-                                    <th:block th:if="${#lists.contains(user.authorities, 'ROLE_OPERATOR')
-                                    && #lists.contains(user.authorities, 'ROLE_ADMIN')
-                                    && !#lists.contains(user.authorities, 'ROLE_ROOT')}">
+                                    <th:block th:if="*{#lists.contains(authorities, 'ROLE_OPERATOR')
+                                    && #lists.contains(authorities, 'ROLE_ADMIN')
+                                    && !#lists.contains(authorities, 'ROLE_ROOT')}">
                                         <form class="mx-1" th:method="post"
-                                              th:action="@{/users/set-operator/{id}(id=${user.id})}">
+                                              th:action="@{/users/set-operator/{id}(id=*{id})}">
                                             <input name="_csrf" type="hidden"
                                                    value="80417983-fe8b-45c7-963e-31f6915a1568">
                                             <button class="btn btn-primary">OPERATOR</button>

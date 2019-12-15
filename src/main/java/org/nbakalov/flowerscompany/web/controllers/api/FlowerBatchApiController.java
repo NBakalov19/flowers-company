@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/flowers/api")
+@RequestMapping("/api/flowers")
 @AllArgsConstructor
 public class FlowerBatchApiController {
 

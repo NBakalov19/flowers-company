@@ -6,15 +6,17 @@ import org.nbakalov.flowerscompany.data.models.models.users.UserCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.users.UserUpdateModel;
 import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
+import org.nbakalov.flowerscompany.services.services.CloudinaryService;
 import org.nbakalov.flowerscompany.services.services.UserService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
-import org.nbakalov.flowerscompany.web.models.view.AllUsersViewModel;
-import org.nbakalov.flowerscompany.web.models.view.UserProfileViewModel;
+import org.nbakalov.flowerscompany.web.models.view.user.AllUsersViewModel;
+import org.nbakalov.flowerscompany.web.models.view.user.UserProfileViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 public class UserController extends BaseController {
 
   private final UserService userService;
+  private final CloudinaryService cloudinaryService;
   private final ModelMapper modelMapper;
 
   @GetMapping("/login")
@@ -42,13 +45,20 @@ public class UserController extends BaseController {
 
   @PostMapping("/register")
   @PreAuthorize("isAnonymous()")
-  public ModelAndView registerConfirm(@ModelAttribute UserCreateModel model) {
-    if (!model.getPassword().equals(model.getConfirmPassword())) {
+  public ModelAndView registerConfirm(@ModelAttribute UserCreateModel createModel) throws IOException {
+
+    if (!createModel.getPassword().equals(createModel.getConfirmPassword())) {
 
       return view("/users/register");
     }
 
-    userService.registerUser(modelMapper.map(model, UserServiceModel.class));
+    UserServiceModel serviceModel =
+            modelMapper.map(createModel, UserServiceModel.class);
+
+    serviceModel.setProfilePictureUrl(
+            cloudinaryService.uploadImage(createModel.getImage()));
+
+    userService.registerUser(serviceModel);
 
     return redirect("/login");
   }
@@ -59,10 +69,10 @@ public class UserController extends BaseController {
 
     UserServiceModel userServiceModel = userService.findByUsername(principal.getName());
 
-    UserProfileViewModel userProfileViewModel = modelMapper.map(
+    UserProfileViewModel profileModel = modelMapper.map(
             userServiceModel, UserProfileViewModel.class);
 
-    modelAndView.addObject("model", userProfileViewModel);
+    modelAndView.addObject("user", profileModel);
 
     return view("/users/profile", modelAndView);
   }
@@ -71,10 +81,13 @@ public class UserController extends BaseController {
   @PreAuthorize("isAuthenticated()")
   public ModelAndView editProfile(Principal principal, ModelAndView modelAndView) {
 
-    UserProfileViewModel userProfileModel = modelMapper.map(
-            userService.findByUsername(principal.getName()), UserProfileViewModel.class);
+    UserServiceModel serviceModel =
+            userService.findByUsername(principal.getName());
 
-    modelAndView.addObject("model", userProfileModel);
+    UserProfileViewModel profileModel = modelMapper.map(
+            serviceModel, UserProfileViewModel.class);
+
+    modelAndView.addObject("user", profileModel);
 
     return view("/users/edit-profile", modelAndView);
   }
@@ -87,7 +100,10 @@ public class UserController extends BaseController {
       return view("/users/edit-profile");
     }
 
-    userService.editUserProfile(modelMapper.map(model, UserServiceModel.class), model.getOldPassword());
+    UserServiceModel serviceModel =
+            modelMapper.map(model, UserServiceModel.class);
+
+    userService.editUserProfile(serviceModel, model.getOldPassword());
 
     return redirect("/users/profile");
   }

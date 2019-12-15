@@ -1,11 +1,11 @@
-package org.nbakalov.flowerscompany.web.models.view;
+package org.nbakalov.flowerscompany.web.models.view.order;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
@@ -17,6 +17,6 @@ public class OrderCancelViewModel {
   private Variety variety;
   private Integer quantity;
   private Integer bunchesPerTray;
-  private LocalDate orderDate;
+  private LocalDateTime orderDate;
 
 }

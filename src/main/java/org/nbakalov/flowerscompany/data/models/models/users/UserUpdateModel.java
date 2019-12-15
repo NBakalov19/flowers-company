@@ -13,6 +13,5 @@ public class UserUpdateModel {
   private String oldPassword;
   private String password;
   private String confirmPassword;
-  private String fullName;
   private String email;
 }

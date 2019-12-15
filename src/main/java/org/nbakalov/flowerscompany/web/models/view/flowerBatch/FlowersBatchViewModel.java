@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.web.models.view;
+package org.nbakalov.flowerscompany.web.models.view.flowerBatch;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,13 @@ import org.nbakalov.flowerscompany.data.models.entities.Variety;
 @NoArgsConstructor
 @Getter
 @Setter
-public class OrderEditViewModel {
+public class FlowersBatchViewModel {
 
   private String id;
+  private String teamSupervisor;
+  private String fieldName;
   private Variety variety;
-  private Integer quantity;
+  private Integer trays;
   private Integer bunchesPerTray;
+  private String warehouse;
 }

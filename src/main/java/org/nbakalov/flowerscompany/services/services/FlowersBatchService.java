@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface FlowersBatchService {
 
-  FlowersBatchServiceModel findBatchById(String id);
-
   FlowersBatchServiceModel registerBatch(FlowersBatchServiceModel flowersBatchServiceModel);
 
   FlowersBatchServiceModel editFlowerBatch(String id, FlowersBatchServiceModel updateModel);
+
+  FlowersBatchServiceModel findBatchById(String id);
 
   List<FlowersBatchServiceModel> findAllBatchesRegisteredToday();
 
@@ -24,5 +24,4 @@ public interface FlowersBatchService {
 
   void deleteBatch(String id);
 
-//  void deleteEmptyBatches();
 }

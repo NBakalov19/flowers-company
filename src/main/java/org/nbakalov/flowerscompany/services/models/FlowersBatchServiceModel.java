@@ -1,6 +1,7 @@
 package org.nbakalov.flowerscompany.services.models;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class FlowersBatchServiceModel extends BaseServiceModel {
   private Variety variety;
   private Integer trays;
   private Integer bunchesPerTray;
-  private LocalDate datePicked;
+  private LocalDateTime datePicked;
   private WarehouseServiceModel warehouse;
 }

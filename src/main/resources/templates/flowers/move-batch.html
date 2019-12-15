@@ -2,7 +2,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="~{fragments/head}"/>
-    <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
+    <link rel="stylesheet"
+          th:href="@{https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css}">
 </head>
 <body>
 <header>
@@ -12,26 +13,31 @@
     <div class="container">
         <div class="pt-5 mt-5">
             <div class="container-1">
-                <h2 class="text-center text-light">Move Flowers Batch</h2>
-                <hr class="style13 w-100">
-                <div class="d-flex justify-content-center align-content-center container">
-                    <form class="mx-auto" th:action="@{/flowers/move-batch/{id}(id=${batch.id})}" th:method="post">
-                        <div class="form-group">
-                            <div class="label-holder textCol d-flex justify-content-center">
-                                <label for="warehouse" class="h4 mb-2 text-white">
-                                    Select Warehouse
-                                    <span class="asteriskField">*</span>
-                                </label>
+                <th:block th:if="${warehousesCount != 1}">
+                    <h2 class="text-center text-light">Move Flowers Batch</h2>
+                    <hr class="style13 w-100">
+                    <div class="d-flex justify-content-center align-content-center container">
+                        <form class="mx-auto" th:action="@{/flowers/move-batch/{id}(id=${batch.id})}" th:method="post">
+                            <div class="form-group">
+                                <div class="label-holder textCol d-flex justify-content-center">
+                                    <label for="warehouse" class="h4 mb-2 text-white">
+                                        Select Warehouse
+                                        <span class="asteriskField">*</span>
+                                    </label>
+                                </div>
+                                <select id="warehouse" name="warehouse" class="custom-select"></select>
                             </div>
-                            <select id="warehouse" name="warehouse" class="custom-select"></select>
-                        </div>
-                        <div class="button-holder d-flex justify-content-center">
-                            <div>
-                                <button name="submit" type="submit" class="btn btn-primary">Move Batch</button>
+                            <div class="button-holder d-flex justify-content-center">
+                                <div>
+                                    <button name="submit" type="submit" class="btn btn-primary">Move Batch</button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-                </div>
+                        </form>
+                    </div>
+                </th:block>
+                <th:block th:unless="${warehousesCount != 1}">
+                    <h1 class="text-center text-light">No have another warehouse to move batch.</h1>
+                </th:block>
             </div>
         </div>
     </div>

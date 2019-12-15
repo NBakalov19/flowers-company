@@ -11,8 +11,8 @@ import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
-import org.nbakalov.flowerscompany.web.models.view.FlowerBatchDeleteViewModel;
-import org.nbakalov.flowerscompany.web.models.view.FlowersBatchViewModel;
+import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowerBatchDeleteViewModel;
+import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowersBatchViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -59,9 +59,14 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/todays-batches")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView todaysFlowersBatch() {
+  public ModelAndView todaysFlowersBatch(ModelAndView modelAndView) {
 
-    return view("/flowers/todays-batches");
+    List<FlowersBatchServiceModel> todaysBatches =
+            flowersBatchService.findAllBatchesRegisteredToday();
+
+    modelAndView.addObject("todaysBatchesCount", todaysBatches.size());
+
+    return view("/flowers/todays-batches", modelAndView);
   }
 
   @GetMapping("/edit-batch/{id}")
@@ -101,8 +106,10 @@ public class FlowersBatchController extends BaseController {
 
     FlowersBatchServiceModel serviceModel =
             flowersBatchService.findBatchById(id);
-
     modelAndView.addObject("batch", serviceModel);
+
+    Long warehousesCount = warehouseService.getWarehousesCount();
+    modelAndView.addObject("warehousesCount", warehousesCount);
 
     return view("flowers/move-batch", modelAndView);
   }

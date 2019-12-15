@@ -1,5 +1,5 @@
 const URLS = {
-    batches: '/flowers/api/todays-batches',
+    batches: '/api/flowers/todays-batches',
 };
 
 const batchRow = ({id, variety, teamSupervisor, fieldName, trays, bunchesPerTray, warehouse}, index) =>
@@ -14,11 +14,11 @@ const batchRow = ({id, variety, teamSupervisor, fieldName, trays, bunchesPerTray
         <td class="col-md-3 text-center text-dark">
             <div class="row justify-content-center">
                 <a href="/flowers/move-batch/${id}" 
-                    class="btn btn-primary text-light mx-1">Move Batch</a>
+                    class="btn-sm btn-primary text-light mx-1">Move Batch</a>
                 <a href="/flowers/edit-batch/${id}"
-                   class="btn btn-warning text-light mx-1">Edit</a>
+                   class="btn-sm btn-warning text-light mx-1">Edit</a>
                 <a href="/flowers/delete-batch/${id}"
-                   class="btn btn-danger text-light mx-1">Delete</a>
+                   class="btn-sm btn-danger text-light mx-1">Delete</a>
             </div>
         </td>
     <tr>`

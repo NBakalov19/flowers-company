@@ -11,43 +11,52 @@
 <main class="mt-3">
     <div class="container">
         <div class="pt-5 mt-5">
-            <h1 class="text-center text-light">All Warehouses</h1>
-            <hr class="style13 w-100">
-            <table style="text-shadow: none" class="table table-hover w-100 mx-auto bg-light">
-                <thead>
-                <tr class="row mx-auto">
-                    <th class="col-md-1 text-center text-dark font-weight-bold">#</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Name</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Temperature</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Current Capacity</th>
-                    <th class="col-md-2 text-center text-dark font-weight-bold">Maximum Capacity</th>
-                    <th class="col-md-3 text-center text-dark font-weight-bold">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <th:block th:each="warehouse, iter : ${warehouses}" th:object="${warehouse}">
+            <th:block th:if="${warehousesCount != 0}">
+                <h1 class="text-center text-light">All Warehouses</h1>
+                <hr class="style13 w-100">
+                <table style="text-shadow: none" class="table table-hover w-100 mx-auto bg-light">
+                    <thead>
                     <tr class="row mx-auto">
-                        <td class="col-md-1 text-center text-dark font-weight-bold" th:text="${iter.index + 1}"></td>
-                        <td class="col-md-2 text-center text-dark" th:text="*{name}"></td>
-                        <td class="col-md-2 text-center text-dark"
-                            th:text="*{#numbers.formatDecimal(temperature,1,2)}"></td>
-                        <td class="col-md-2 text-center text-dark" th:text="*{currCapacity}"></td>
-                        <td class="col-md-2 text-center text-dark" th:text="*{maxCapacity}"></td>
-                        <td class="col-md-3 text-center text-dark">
-                            <div class="row justify-content-center">
-                                <a th:href="@{/warehouses/details/{id}(id=*{id})}"
-                                   class="btn btn-primary text-light mx-1">Details</a>
-                                <a th:href="@{/warehouses/edit/{id}(id=*{id})}"
-                                   class="btn btn-warning text-light mx-1">Edit</a>
-                                <a th:href="@{/warehouses/delete/{id}(id=*{id})}"
-                                   class="btn btn-danger text-light mx-1">Delete</a>
-                            </div>
-                        </td>
+                        <th class="col-md-1 text-center text-dark font-weight-bold">#</th>
+                        <th class="col-md-2 text-center text-dark font-weight-bold">Name</th>
+                        <th class="col-md-2 text-center text-dark font-weight-bold">Temperature</th>
+                        <th class="col-md-2 text-center text-dark font-weight-bold">Current Capacity</th>
+                        <th class="col-md-2 text-center text-dark font-weight-bold">Maximum Capacity</th>
+                        <th class="col-md-3 text-center text-dark font-weight-bold">Actions</th>
                     </tr>
-                </th:block>
-                </tbody>
-            </table>
-            <hr class="style13 w-100">
+                    </thead>
+                    <tbody>
+                    <th:block th:each="warehouse, iter : ${warehouses}" th:object="${warehouse}">
+                        <tr class="row mx-auto">
+                            <td class="col-md-1 text-center text-dark font-weight-bold"
+                                th:text="${iter.index + 1}"></td>
+                            <td class="col-md-2 text-center text-dark" th:text="*{name}"></td>
+                            <td class="col-md-2 text-center text-dark"
+                                th:text="*{#numbers.formatDecimal(temperature,1,2)}"></td>
+                            <td class="col-md-2 text-center text-dark" th:text="*{currCapacity}"></td>
+                            <td class="col-md-2 text-center text-dark" th:text="*{maxCapacity}"></td>
+                            <td class="col-md-3 text-center text-dark">
+                                <div class="row justify-content-center">
+                                    <a th:href="@{/warehouses/details/{id}(id=*{id})}"
+                                       class="btn btn-primary text-light mx-1">Details</a>
+                                    <a th:href="@{/warehouses/edit/{id}(id=*{id})}"
+                                       class="btn btn-warning text-light mx-1">Edit</a>
+                                    <a th:href="@{/warehouses/delete/{id}(id=*{id})}"
+                                       class="btn btn-danger text-light mx-1">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+                <hr class="style13 w-100">
+            </th:block>
+            <th:block th:unless="${warehousesCount != 0}">
+                <h1 class="text-center text-light">No have warehouses.</h1>
+                <div class="button-holder d-flex justify-content-center">
+                    <a th:href="@{/warehouses/create-warehouse}" class="btn btn-primary">Make one</a>
+                </div>
+            </th:block>
         </div>
     </div>
 </main>

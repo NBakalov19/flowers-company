@@ -5,7 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -23,16 +26,19 @@ public class Order extends BaseEntity {
   private Variety variety;
 
   @Column(name = "quantity", nullable = false)
+  @Min(1)
   private Integer quantity;
 
   @Column(name = "bunches_per_tray", nullable = false)
+  @Min(10)
+  @Max(25)
   private Integer bunchesPerTray;
 
-  @Column(name = "order_date", nullable = false, updatable = false)
-  private LocalDate orderDate;
+  @Column(name = "order_date_time", nullable = false, updatable = false)
+  private LocalDateTime orderDateTime;
 
   @Column(name = "finished_on")
-  private LocalDate finishedOn;
+  private LocalDateTime finishedOn;
 
   @Column(name = "status", nullable = false)
   @Enumerated(value = EnumType.STRING)

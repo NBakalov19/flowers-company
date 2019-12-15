@@ -1,16 +1,16 @@
 package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseUpdateModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
-import org.nbakalov.flowerscompany.web.models.view.AllWarehousesViewModel;
-import org.nbakalov.flowerscompany.web.models.view.WarehouseUpdateViewModel;
-import org.nbakalov.flowerscompany.web.models.view.WarehouseViewModel;
+import org.nbakalov.flowerscompany.web.models.view.warehouese.AllWarehousesViewModel;
+import org.nbakalov.flowerscompany.web.models.view.warehouese.WarehouseDetailsViewModel;
+import org.nbakalov.flowerscompany.web.models.view.warehouese.WarehouseUpdateViewModel;
+import org.nbakalov.flowerscompany.web.models.view.warehouese.WarehouseViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +47,9 @@ public class WarehouseController extends BaseController {
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   public ModelAndView allWarehouses(ModelAndView modelAndView) {
 
+    Long warehousesCount = warehouseService.getWarehousesCount();
+    modelAndView.addObject("warehousesCount", warehousesCount);
+
     List<AllWarehousesViewModel> allWarehouses = warehouseService.findAllWarehouses()
             .stream()
             .map(warehouseServiceModel ->
@@ -65,10 +68,13 @@ public class WarehouseController extends BaseController {
     WarehouseServiceModel warehouseServiceModel =
             warehouseService.findWarehouseById(id);
 
-    WarehouseViewModel warehouseViewModel =
-            modelMapper.map(warehouseServiceModel, WarehouseViewModel.class);
+    WarehouseDetailsViewModel detailsViewModel =
+            modelMapper.map(warehouseServiceModel, WarehouseDetailsViewModel.class);
 
-    modelAndView.addObject("warehouse", warehouseViewModel);
+    Long warehousesCount = warehouseService.getWarehousesCount();
+
+    modelAndView.addObject("warehouse", detailsViewModel);
+    modelAndView.addObject("warehousesCount", warehousesCount);
 
     return view("warehouses/warehouse-details", modelAndView);
   }
@@ -80,10 +86,10 @@ public class WarehouseController extends BaseController {
     WarehouseServiceModel warehouseServiceModel =
             warehouseService.findWarehouseById(id);
 
-    WarehouseUpdateViewModel warehouseUpdateViewModel =
+    WarehouseUpdateViewModel updateViewModel =
             modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
 
-    modelAndView.addObject("warehouse", warehouseUpdateViewModel);
+    modelAndView.addObject("warehouse", updateViewModel);
 
     return view("warehouses/edit-warehouse", modelAndView);
   }
