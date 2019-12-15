@@ -1,6 +1,6 @@
 package org.nbakalov.flowerscompany.constants;
 
-public class WarehouseConstants {
+public final class WarehouseConstants {
 
   public static final int INITIAL_CURRENT_CAPACITY = 0;
 

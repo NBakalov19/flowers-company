@@ -11,63 +11,7 @@
 <main style="margin-right: 105px" class="mt-3">
     <div class="container">
         <div style="width: 1200px" class="pt-5 mt-5">
-            <th:block th:if="${#lists.size(orders) != 0}">
-                <h1 class="text-center text-light">All Orders</h1>
-                <hr class="style13">
-                <table style="text-shadow: none" class="table table-hover bg-light">
-                    <thead>
-                    <tr class="row mx-auto">
-                        <th class="col-sm-1 text-center text-dark font-weight-bold">#</th>
-                        <th class="col-md-1 text-center text-dark font-weight-bold">Customer</th>
-                        <th class="col-md-1 text-center text-dark font-weight-bold">Variety</th>
-                        <th class="col-md-1 text-center text-dark font-weight-bold">Quantity</th>
-                        <th class="col-md-1 text-center text-dark font-weight-bold">Bunches Per Tray</th>
-                        <th class="col-md-2 text-center text-dark font-weight-bold">Order Date</th>
-                        <th class="col-md-2 text-center text-dark font-weight-bold">Finished On</th>
-                        <th class="col-md-1 text-center text-dark font-weight-bold">Status</th>
-                        <th class="col-md-2 text-center text-dark font-weight-bold">Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <th:block th:each="order,iter : ${orders}" th:object="${order}">
-                        <tr class="row mx-auto">
-                            <th class="col-sm-1 text-center text-dark font-weight-bold"
-                                th:text="${iter.index + 1}"></th>
-                            <td class="col-md-1 text-center text-dark" th:text="*{customer}"></td>
-                            <td class="col-md-1 text-center text-dark"
-                                th:text="*{variety != null}
-                                        ? *{variety}
-                                        : ''"></td>
-                            <td class="col-md-1 text-center text-dark" th:text="*{quantity}"></td>
-                            <td class="col-md-1 text-center text-dark" th:text="*{bunchesPerTray}"></td>
-                            <td class="col-md-2 text-center text-dark"
-                                th:text="*{#temporals.format(orderDate, 'dd-MM-yyyy')}"></td>
-                            <td class="col-md-2 text-center text-dark"
-                                th:text="*{finishedOn != null}
-                                        ? *{#temporals.format(finishedOn, 'dd-MM-yyyy')}
-                                        : ''"></td>
-                            <td class="col-md-1 text-center text-dark" th:text="*{status}"></td>
-                            <td class="col-md-2 text-center text-dark">
-                                <th:block th:if="*{status == 'In progress'}">
-                                    <div class="row justify-content-center">
-                                        <form class="mx-1" th:action="@{/orders/review-order/{id}(id=*{id})}"
-                                              th:method="post">
-                                            <input name="_csrf" type="hidden"
-                                                   value="80417983-fe8b-45c7-963e-31f6915a1568">
-                                            <button class="btn btn-primary">Review</button>
-                                        </form>
-                                    </div>
-                                </th:block>
-                            </td>
-                        <tr>
-                    </th:block>
-                    </tbody>
-                </table>
-            </th:block>
-            <th:block th:unless="${#lists.size(orders) != 0}">
-                <h1 class="text-center text-light">No have orders</h1>
-            </th:block>
-            <hr class="style13 w-100">
+            <th:block th:include="~{fragments/all-orders-table}"/>
         </div>
     </div>
 </main>

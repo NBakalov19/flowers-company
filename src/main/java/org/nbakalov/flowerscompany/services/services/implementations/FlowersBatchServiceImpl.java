@@ -13,6 +13,8 @@ import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,7 +79,12 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
   @Override
   public List<FlowersBatchServiceModel> findAllBatchesRegisteredToday() {
-    return flowersBatchRepository.findAllByDatePicked(TODAY)
+
+    LocalDate today = LocalDate.now();
+    LocalDateTime beginOfDay = today.atStartOfDay();
+    LocalDateTime endOfDay = today.atTime(23, 59, 59);
+
+    return flowersBatchRepository.findAllByDatePickedBetweenOrderByDatePicked(beginOfDay, endOfDay)
             .stream()
             .map(batch -> modelMapper.map(batch, FlowersBatchServiceModel.class))
             .collect(Collectors.toList());

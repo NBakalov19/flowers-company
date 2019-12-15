@@ -5,14 +5,29 @@
 >
 <head>
     <th:block th:include="~{fragments/head}"/>
-
+    <th:block sec:authorize="hasRole('ROLE_OPERATOR') and !hasRole('ROLE_ROOT')">
+        <script th:src="@{/js/fetch/getTodaysBatches.js}"></script>
+    </th:block>
 </head>
 <body>
 <header>
     <th:block th:include="~{fragments/navbar}"/>
 </header>
-<main>
-
+<main style="margin-right: 105px">
+    <div class="container">
+        <div style="width: 1200px" class="pt-5 mt-5">
+            <th:block sec:authorize="hasRole('ROLE_CUSTOMER') and !hasRole('ROLE_ROOT')">
+                <th:block th:include="~{fragments/my-orders-table}"/>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_OPERATOR') and !hasRole('ROLE_ADMIN')">
+                <th:block th:include="~{fragments/todays-batches-table}"/>
+            </th:block>
+            <th:block sec:authorize="hasRole('ROLE_OPERATOR') and hasRole('ROLE_ADMIN')">
+                <th:block th:include="~{fragments/all-warehouses-table}"/>
+                <th:block th:include="~{fragments/all-orders-table}"/>
+            </th:block>
+        </div>
+    </div>
 </main>
 <footer th:include="~{fragments/footer}"></footer>
 </body>

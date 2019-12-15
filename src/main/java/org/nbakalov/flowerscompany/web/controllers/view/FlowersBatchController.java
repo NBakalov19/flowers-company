@@ -10,6 +10,7 @@ import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowerBatchDeleteViewModel;
 import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowersBatchViewModel;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 
 @Controller
 @RequestMapping("/flowers")
@@ -32,6 +35,7 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/create-batch")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(CREATE_FLOWERS_BATCH)
   public ModelAndView createFlowersBatch(ModelAndView modelAndView) {
 
     List<Variety> varieties = Variety.stream().collect(Collectors.toList());
@@ -59,6 +63,7 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/todays-batches")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(TODAYS_FLOWERS_BATCHES)
   public ModelAndView todaysFlowersBatch(ModelAndView modelAndView) {
 
     List<FlowersBatchServiceModel> todaysBatches =
@@ -71,6 +76,7 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/edit-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(EDIT_FLOWERS_BATCH)
   public ModelAndView editFlowersBatch(@PathVariable String id, ModelAndView modelAndView) {
 
     FlowersBatchServiceModel serviceModel =
@@ -102,6 +108,7 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/move-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(MOVE_FLOWERS_BATCH)
   public ModelAndView moveFlowersBatch(@PathVariable String id, ModelAndView modelAndView) {
 
     FlowersBatchServiceModel serviceModel =
@@ -125,6 +132,7 @@ public class FlowersBatchController extends BaseController {
 
   @GetMapping("/delete-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(DELETE_FLOWERS_BATCH)
   public ModelAndView deleteFlowersBatch(@PathVariable String id, ModelAndView modelAndView) {
 
     FlowersBatchServiceModel serviceModel =

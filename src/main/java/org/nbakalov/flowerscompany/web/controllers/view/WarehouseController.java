@@ -6,6 +6,7 @@ import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseCreateM
 import org.nbakalov.flowerscompany.data.models.models.warehouse.WarehouseUpdateModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.warehouese.AllWarehousesViewModel;
 import org.nbakalov.flowerscompany.web.models.view.warehouese.WarehouseDetailsViewModel;
@@ -19,6 +20,8 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
+
 @Controller
 @RequestMapping("/warehouses")
 @AllArgsConstructor
@@ -29,6 +32,7 @@ public class WarehouseController extends BaseController {
 
   @GetMapping("/create-warehouse")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PageTitle(CREATE_WAREHOUSE)
   public ModelAndView createWarehouse() {
 
     return view("/warehouses/create-warehouse");
@@ -45,6 +49,7 @@ public class WarehouseController extends BaseController {
 
   @GetMapping("/all")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(ALL_WAREHOUSES)
   public ModelAndView allWarehouses(ModelAndView modelAndView) {
 
     Long warehousesCount = warehouseService.getWarehousesCount();
@@ -63,6 +68,7 @@ public class WarehouseController extends BaseController {
 
   @GetMapping("/details/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
+  @PageTitle(DETAILS_WAREHOUSE)
   public ModelAndView warehouseDetails(@PathVariable String id, ModelAndView modelAndView) {
 
     WarehouseServiceModel warehouseServiceModel =
@@ -81,6 +87,7 @@ public class WarehouseController extends BaseController {
 
   @GetMapping("/edit/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PageTitle(EDIT_WAREHOUSE)
   public ModelAndView editWarehouse(@PathVariable String id, ModelAndView modelAndView) {
 
     WarehouseServiceModel warehouseServiceModel =
@@ -109,6 +116,7 @@ public class WarehouseController extends BaseController {
 
   @GetMapping("/delete/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PageTitle(DELETE_WAREHOUSE)
   public ModelAndView deleteWarehouse(@PathVariable String id, ModelAndView modelAndView) {
 
     WarehouseServiceModel warehouseServiceModel =

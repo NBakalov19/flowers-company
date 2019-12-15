@@ -2,7 +2,7 @@ package org.nbakalov.flowerscompany.constants;
 
 import java.time.LocalDateTime;
 
-public class FlowersBatchConstants {
+public final class FlowersBatchConstants {
 
   public final static LocalDateTime TODAY = LocalDateTime.now();
 

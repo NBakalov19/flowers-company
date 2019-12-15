@@ -7,6 +7,7 @@ import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.OrderService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderViewModel;
 import org.nbakalov.flowerscompany.web.models.view.warehouese.AllWarehousesViewModel;
@@ -16,15 +17,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.HOME;
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.INDEX;
 import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
 
 @Controller
@@ -38,64 +37,48 @@ public class HomeController extends BaseController {
 
   @GetMapping("/index")
   @PreAuthorize("isAnonymous()")
+  @PageTitle(INDEX)
   public ModelAndView index() {
     return view("index");
   }
 
   @GetMapping("/home")
-  public void loginPageRedirect(HttpServletRequest request,
-                                HttpServletResponse response, Authentication authResult)
-          throws IOException, ServletException, IOException {
+  @PageTitle(HOME)
+  public ModelAndView loginPageRedirect(Authentication authResult, ModelAndView modelAndView, Principal principal) {
 
-    Set<String> roles = authResult.getAuthorities()
+    Set<String> userRoles = getUserRoles(authResult);
+
+    getUserModelAndViewByUserRoles(modelAndView, userRoles, principal);
+
+    return view("home", modelAndView);
+  }
+
+
+  private Set<String> getUserRoles(Authentication authResult) {
+
+    return authResult.getAuthorities()
             .stream()
             .map(o -> (Role) o)
             .map(Role::getAuthority)
             .collect(Collectors.toSet());
+  }
 
-    if (roles.contains(CUSTOMER) && !roles.contains(ROOT)) {
-      response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/home-customer"));
-    } else if (roles.contains(OPERATOR) && !roles.contains(ADMIN)) {
-      response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/home-operator"));
-    } else if (roles.contains(OPERATOR) && roles.contains(ADMIN) && !roles.contains(ROOT)) {
-      response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/home-admin"));
-    } else if (roles.contains(ROOT)) {
-      response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/home-root"));
+  private ModelAndView getUserModelAndViewByUserRoles(ModelAndView modelAndView,
+                                                      Set<String> userRoles,
+                                                      Principal principal) {
+
+    if (userRoles.contains(CUSTOMER) && !userRoles.contains(ROOT)) {
+      getCustomerModelAndView(modelAndView, principal);
+    } else if (userRoles.contains(OPERATOR) && !userRoles.contains(ADMIN)) {
+      getOperatorModelAndView(modelAndView);
+    } else {
+      geAdminModelAndView(modelAndView);
     }
+
+    return modelAndView;
   }
 
-  @GetMapping("/home-customer")
-  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-  public ModelAndView customerHome(Principal principal, ModelAndView modelAndView) {
-
-    List<OrderViewModel> myOrders =
-            orderService.findAllMyOrders(principal.getName())
-                    .stream()
-                    .map(orderServiceModel ->
-                            modelMapper.map(orderServiceModel, OrderViewModel.class))
-                    .collect(Collectors.toList());
-
-    modelAndView.addObject("orders", myOrders);
-
-    return view("/home/home-customer", modelAndView);
-  }
-
-  @GetMapping("/home-operator")
-  @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView operatorHome(ModelAndView modelAndView) {
-
-    List<FlowersBatchServiceModel> todaysBatches =
-            flowersBatchService.findAllBatchesRegisteredToday();
-
-    modelAndView.addObject("todaysBatchesCount", todaysBatches.size());
-
-    return view("/home/home-operator", modelAndView);
-  }
-
-  @GetMapping("/home-admin")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView adminHome(ModelAndView modelAndView) {
-
+  private ModelAndView geAdminModelAndView(ModelAndView modelAndView) {
     List<OrderViewModel> findAllOrders =
             orderService.findAllOrders()
                     .stream()
@@ -116,14 +99,29 @@ public class HomeController extends BaseController {
 
     modelAndView.addObject("warehouses", allWarehouses);
 
-    return view("/home/home-admin", modelAndView);
+    return modelAndView;
   }
 
-  @GetMapping("/home-root")
-  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-  public ModelAndView rootHome() {
+  private ModelAndView getOperatorModelAndView(ModelAndView modelAndView) {
+    List<FlowersBatchServiceModel> todaysBatches =
+            flowersBatchService.findAllBatchesRegisteredToday();
 
-    return view("/home/home-root");
+    modelAndView.addObject("todaysBatchesCount", todaysBatches.size());
+
+    return modelAndView;
+  }
+
+  private ModelAndView getCustomerModelAndView(ModelAndView modelAndView, Principal principal) {
+
+    List<OrderViewModel> myOrders =
+            orderService.findAllMyOrders(principal.getName())
+                    .stream()
+                    .map(orderServiceModel ->
+                            modelMapper.map(orderServiceModel, OrderViewModel.class))
+                    .collect(Collectors.toList());
+
+    modelAndView.addObject("orders", myOrders);
+    return modelAndView;
   }
 
 }

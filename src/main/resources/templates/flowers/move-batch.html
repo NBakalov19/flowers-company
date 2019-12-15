@@ -47,13 +47,14 @@
 </footer>
 </body>
 <script type="text/javascript" th:inline="javascript">
-    fetch('/warehouses/api/all')
+    fetch('/api/warehouses/all')
         .then((response) => response.json())
         .then((json) => {
 
             let currWarehouse = [[${batch.warehouse.name}]];
 
-            json.filter((warehouse) => warehouse.name !== currWarehouse)
+            json
+                .filter((warehouse) => warehouse.name !== currWarehouse)
                 .forEach((warehouse) =>
                     $('#warehouse').append(`<option value="${warehouse.id}">${warehouse.name}</option>`))
         })

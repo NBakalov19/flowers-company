@@ -7,6 +7,7 @@ import org.nbakalov.flowerscompany.data.models.models.orders.OrderCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderUpdateModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.services.OrderService;
+import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderCancelViewModel;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderEditViewModel;
@@ -20,6 +21,8 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
+
 @Controller
 @RequestMapping("/orders")
 @AllArgsConstructor
@@ -30,6 +33,7 @@ public class OrderController extends BaseController {
 
   @GetMapping("/make-order")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  @PageTitle(MAKE_ORDER)
   public ModelAndView makeOrder(ModelAndView modelAndView) {
 
     List<Variety> varieties = Variety.stream().collect(Collectors.toList());
@@ -52,6 +56,7 @@ public class OrderController extends BaseController {
 
   @GetMapping("/my-orders")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  @PageTitle(MY_ORDERS)
   public ModelAndView myOrders(Principal principal, ModelAndView modelAndView) {
 
     List<OrderViewModel> myOrders =
@@ -68,6 +73,7 @@ public class OrderController extends BaseController {
 
   @GetMapping("/edit-order/{id}")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  @PageTitle(EDIT_ORDER)
   public ModelAndView editOrder(@PathVariable String id, ModelAndView modelAndView) {
 
     OrderServiceModel serviceModel = orderService.findOrderById(id);
@@ -97,6 +103,7 @@ public class OrderController extends BaseController {
 
   @GetMapping("/cancel-order/{id}")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  @PageTitle(DELETE_ORDER)
   public ModelAndView cancelOrder(@PathVariable String id, ModelAndView modelAndView) {
 
     OrderServiceModel serviceModel =
@@ -121,6 +128,7 @@ public class OrderController extends BaseController {
 
   @GetMapping("/all")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PageTitle(ALL_ORDERS)
   public ModelAndView allOrders(ModelAndView modelAndView) {
 
     List<OrderViewModel> findAllOrders =

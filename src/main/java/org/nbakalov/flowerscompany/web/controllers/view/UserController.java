@@ -8,6 +8,7 @@ import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.services.CloudinaryService;
 import org.nbakalov.flowerscompany.services.services.UserService;
+import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.user.AllUsersViewModel;
 import org.nbakalov.flowerscompany.web.models.view.user.UserProfileViewModel;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
+
 @Controller
 @RequestMapping("/users")
 @AllArgsConstructor
@@ -33,12 +36,14 @@ public class UserController extends BaseController {
 
   @GetMapping("/login")
   @PreAuthorize("isAnonymous()")
+  @PageTitle(LOGIN)
   public ModelAndView login() {
     return view("/users/login");
   }
 
   @GetMapping("/register")
   @PreAuthorize("isAnonymous()")
+  @PageTitle(REGISTER)
   public ModelAndView register() {
     return view("/users/register");
   }
@@ -65,6 +70,7 @@ public class UserController extends BaseController {
 
   @GetMapping("/profile")
   @PreAuthorize("isAuthenticated()")
+  @PageTitle(PROFILE)
   public ModelAndView profile(Principal principal, ModelAndView modelAndView) {
 
     UserServiceModel userServiceModel = userService.findByUsername(principal.getName());
@@ -79,6 +85,7 @@ public class UserController extends BaseController {
 
   @GetMapping("/edit")
   @PreAuthorize("isAuthenticated()")
+  @PageTitle(EDIT_PROFILE)
   public ModelAndView editProfile(Principal principal, ModelAndView modelAndView) {
 
     UserServiceModel serviceModel =
@@ -110,6 +117,7 @@ public class UserController extends BaseController {
 
   @GetMapping("/all")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PageTitle(ALL_USERS)
   public ModelAndView getAllUsers(ModelAndView modelAndView) {
 
     List<AllUsersViewModel> allUsers = this.userService.findAllUsers()

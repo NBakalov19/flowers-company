@@ -1,0 +1,25 @@
+<th:block th:if="${todaysBatchesCount != 0}">
+    <h1 class="text-center text-light">Today`s Batches</h1>
+    <hr class="style13 w-100">
+    <table style="text-shadow: none" class="table table-hover bg-light">
+        <thead>
+        <tr class="row mx-auto">
+            <th class="col-sm-1 text-center text-dark font-weight-bold">#</th>
+            <th class="col-md-1 text-center text-dark font-weight-bold">Warehouse</th>
+            <th class="col-md-1 text-center text-dark font-weight-bold">Variety</th>
+            <th class="col-md-1 text-center text-dark font-weight-bold">Trays</th>
+            <th class="col-md-1 text-center text-dark font-weight-bold">Bunches Per Tray</th>
+            <th class="col-md-2 text-center text-dark font-weight-bold">Team Supervisor</th>
+            <th class="col-md-2 text-center text-dark font-weight-bold">Field Name</th>
+            <th class="col-md-3 text-center text-dark font-weight-bold">Actions</th>
+        </tr>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+    </table>
+    <hr class="style13 w-100">
+</th:block>
+</div>
+<th:block th:unless="${todaysBatchesCount != 0}">
+    <h1 class="text-center text-light">No batches are registered today.</h1>
+</th:block>
