@@ -16,4 +16,6 @@ public interface WarehouseRepository extends JpaRepository<Warehouse, String> {
   @Override
   @Query("select w from Warehouse as w order by w.maxCapacity desc")
   List<Warehouse> findAll();
+
+  Optional<Warehouse> findByName(String name);
 }

@@ -9,7 +9,7 @@ import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderCancelViewModel;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderViewModel;
 import org.nbakalov.flowerscompany.web.models.api.TodayFlowersBatchApiModel;
-import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowerBatchDeleteViewModel;
+import org.nbakalov.flowerscompany.web.models.view.flowerbatch.FlowerBatchDeleteViewModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

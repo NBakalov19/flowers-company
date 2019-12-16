@@ -3,10 +3,10 @@ package org.nbakalov.flowerscompany.data.models.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.usertype.UserType;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 
@@ -18,9 +18,11 @@ import java.util.Set;
 public class User extends BaseEntity implements UserDetails {
 
   @Column(name = "username", nullable = false, updatable = false, unique = true)
+  @Size(min = 3, max = 20)
   private String username;
 
   @Column(name = "password", nullable = false)
+  @Size(min = 6, max = 15)
   private String password;
 
   @Column(name = "email", nullable = false, unique = true)

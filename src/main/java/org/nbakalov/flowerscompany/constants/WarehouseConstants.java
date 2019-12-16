@@ -11,4 +11,9 @@ public final class WarehouseConstants {
   public static final String WAREHOUSE_NOT_FOUND = "Warehouse not found.";
 
   public static final String NOT_POSSIBLE_TO_EMPTY = "Not Possible To Empty Warehouse";
+
+  public static final String WAREHOUSE_BAD_CREDENTIALS  = "Warehouse not created. Bad credentials.";
+
+  public static final String WAREHOUSE_ALLREADY_EXIST = "warehouse allready exist";
+
 }

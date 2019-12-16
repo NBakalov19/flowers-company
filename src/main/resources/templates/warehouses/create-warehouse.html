@@ -31,8 +31,10 @@
                                 <span class="asteriskField">*</span>
                             </label>
                         </div>
-                        <input class="form-control" id="capacity" name="maxCapacity" placeholder="Maximum Capacity"
-                               type="text" required/>
+                        <input class="form-control" id="capacity" name="maxCapacity"
+                               placeholder="Maximum Capacity" type="text" required
+                               data-toggle="popover" title="Minimum trays capacity"
+                               data-content="2500"/>
                     </div>
                     <div class="button-holder d-flex justify-content-center">
                         <button class="btn btn-primary" name="submit" type="submit">
@@ -48,4 +50,9 @@
     <th:block th:include="~{fragments/footer}"/>
 </footer>
 </body>
+<script>
+    $(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
 </html>

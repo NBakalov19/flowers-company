@@ -6,12 +6,11 @@ import lombok.Setter;
 import org.nbakalov.flowerscompany.data.models.entities.Status;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @Getter
-  @Setter
+@Setter
 public class OrderServiceModel extends BaseServiceModel {
 
   private UserServiceModel customer;

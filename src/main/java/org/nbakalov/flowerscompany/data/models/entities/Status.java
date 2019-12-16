@@ -15,7 +15,7 @@ public enum Status {
 
   private final String status;
 
-  public static Stream<Variety> stream() {
-    return Stream.of(Variety.values());
+  public static Stream<Status> stream() {
+    return Stream.of(Status.values());
   }
 }

@@ -7,20 +7,22 @@ import org.nbakalov.flowerscompany.data.models.entities.Order;
 import org.nbakalov.flowerscompany.data.models.entities.Status;
 import org.nbakalov.flowerscompany.data.models.entities.User;
 import org.nbakalov.flowerscompany.data.repositories.OrderRepository;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalOrderServiceModelException;
+import org.nbakalov.flowerscompany.errors.notfound.OrderNotFoundException;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.OrderService;
 import org.nbakalov.flowerscompany.services.services.UserService;
+import org.nbakalov.flowerscompany.services.validations.OrderServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.nbakalov.flowerscompany.constants.OrderConstants.ORDER_NOT_FOUND;
-import static org.nbakalov.flowerscompany.constants.OrderConstants.TODAY;
+import static org.nbakalov.flowerscompany.constants.OrderConstants.*;
 import static org.nbakalov.flowerscompany.data.models.entities.Status.APPROVED;
 import static org.nbakalov.flowerscompany.data.models.entities.Status.DENIED;
 
@@ -31,10 +33,15 @@ public class OrderServiceImpl implements OrderService {
   private final OrderRepository orderRepository;
   private final UserService userService;
   private final FlowersBatchService flowersBatchService;
+  private final OrderServiceModelValidatorService validatorService;
   private final ModelMapper modelMapper;
 
   @Override
   public OrderServiceModel makeOrder(OrderServiceModel serviceModel, String customerName) {
+
+    if (!validatorService.isValid(serviceModel)) {
+      throw new IllegalOrderServiceModelException(ORDER_BAD_CREDENTIALS);
+    }
 
     UserServiceModel customer = userService.findByUsername(customerName);
 
@@ -52,10 +59,9 @@ public class OrderServiceImpl implements OrderService {
   @Override
   public OrderServiceModel editOrder(String id, OrderServiceModel updateModel) {
 
-    OrderServiceModel oldOrder =
-            orderRepository.findById(id)
-                    .map(order -> modelMapper.map(order, OrderServiceModel.class))
-                    .orElseThrow(() -> new NoResultException("Order not found."));
+    OrderServiceModel oldOrder = orderRepository.findById(id)
+            .map(order -> modelMapper.map(order, OrderServiceModel.class))
+            .orElseThrow(() -> new OrderNotFoundException(ORDER_NOT_FOUND));
 
     oldOrder.setVariety(updateModel.getVariety());
     oldOrder.setQuantity(updateModel.getQuantity());
@@ -72,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
 
     return orderRepository.findById(id)
             .map(order -> modelMapper.map(order, OrderServiceModel.class))
-            .orElseThrow(() -> new NoResultException(ORDER_NOT_FOUND));
+            .orElseThrow(() -> new OrderNotFoundException(ORDER_NOT_FOUND));
   }
 
   @Override
@@ -99,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
   public void cancelOrder(String id) {
 
     Order order = orderRepository.findById(id)
-            .orElseThrow(() -> new NoResultException(ORDER_NOT_FOUND));
+            .orElseThrow(() -> new OrderNotFoundException(ORDER_NOT_FOUND));
 
     orderRepository.delete(order);
   }

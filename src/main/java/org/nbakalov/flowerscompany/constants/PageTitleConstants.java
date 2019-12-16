@@ -1,6 +1,6 @@
 package org.nbakalov.flowerscompany.constants;
 
-public class PageTitleConstants {
+public final class PageTitleConstants {
 
   public static final String INDEX = "Index";
   public static final String HOME = "Home";

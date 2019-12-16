@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
+import org.nbakalov.flowerscompany.errors.unabled.NotPossibleToEmptyWarehouseException;
+import org.nbakalov.flowerscompany.errors.dublicates.WarehouseAllreadyExistException;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalWarehouseServiceModelException;
+import org.nbakalov.flowerscompany.errors.notfound.WarehouseNotFoundException;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.services.validations.WarehouseServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.NoResultException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,10 +26,19 @@ import static org.nbakalov.flowerscompany.constants.WarehouseConstants.*;
 public class WarehouseServiceImpl implements WarehouseService {
 
   private final WarehouseRepository warehouseRepository;
+  private final WarehouseServiceModelValidatorService validatorService;
   private final ModelMapper modelMapper;
 
   @Override
   public WarehouseServiceModel createWarehouse(WarehouseServiceModel warehouseServiceModel) {
+
+    if (!validatorService.isValid(warehouseServiceModel)) {
+      throw new IllegalWarehouseServiceModelException(WAREHOUSE_BAD_CREDENTIALS);
+    }
+
+    if (warehouseRepository.findByName(warehouseServiceModel.getName()).isPresent()) {
+      throw new WarehouseAllreadyExistException(WAREHOUSE_ALLREADY_EXIST);
+    }
 
     warehouseServiceModel.setTemperature(getRandomNumber());
     warehouseServiceModel.setBatches(new LinkedHashSet<>());
@@ -56,7 +69,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   public WarehouseServiceModel findWarehouseById(String id) {
     return warehouseRepository.findById(id)
             .map(warehouse -> modelMapper.map(warehouse, WarehouseServiceModel.class))
-            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
+            .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     //TODO EXCEPTION
   }
@@ -65,7 +78,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   public WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel) {
 
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
+            .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     Set<FlowersBatchServiceModel> batches = warehouse.getBatches()
             .stream()
@@ -80,7 +93,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   @Override
   public void deleteWarehouse(String id) {
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
+            .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     warehouseRepository.delete(warehouse);
   }
@@ -94,7 +107,7 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     Warehouse warehouse = warehouseRepository.findById(id)
-            .orElseThrow(() -> new NoResultException(WAREHOUSE_NOT_FOUND));
+            .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     Warehouse emptiestWarehouse = warehouseRepository.findFirstByOrderByCurrCapacityAsc();
 
@@ -114,7 +127,7 @@ public class WarehouseServiceImpl implements WarehouseService {
       updateCurrCapacity(modelMapper.map(emptiestWarehouse, WarehouseServiceModel.class));
 
     } else {
-      throw new IllegalArgumentException(NOT_POSSIBLE_TO_EMPTY);
+      throw new NotPossibleToEmptyWarehouseException(NOT_POSSIBLE_TO_EMPTY);
     }
   }
 

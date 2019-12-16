@@ -32,6 +32,7 @@ public class FlowersBatch extends BaseEntity {
 
   @Column(name = "trays", nullable = false)
   @Min(1)
+  @Max(1000)
   private Integer trays;
 
   @Column(name = "bunches_per_tray", nullable = false)

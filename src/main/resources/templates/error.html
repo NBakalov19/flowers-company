@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="${title}"></title>
+    <link rel="icon" th:href="${favicon}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/reset-css.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/error-css.css}">
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script th:src="@{/js/popper.min.js}"></script>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/error-page.js}"></script>
+</head>
+<body class="index">
+<header>
+    <th:block th:include="~{fragments/navbar}"/>
+</header>
+<main>
+    <div class="box">
+        <div class="box__ghost">
+            <div class="symbol"></div>
+            <div class="symbol"></div>
+            <div class="symbol"></div>
+            <div class="symbol"></div>
+            <div class="symbol"></div>
+            <div class="symbol"></div>
+
+            <div class="box__ghost-container">
+                <div class="box__ghost-eyes">
+                    <div class="box__eye-left"></div>
+                    <div class="box__eye-right"></div>
+                </div>
+                <div class="box__ghost-bottom">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="box__ghost-shadow"></div>
+        </div>
+
+        <div class="box__description">
+            <div class="box__description-container">
+                <div class="box__description-title">Whoops!</div>
+                <div class="box__description-title">
+                    <th:block>
+                        Error: <span th:text="${statusCode}"></span>
+                    </th:block>
+                </div>
+                <div class="box__description-text text-white"><th:block th:text="${message}"/></div>
+            </div>
+
+            <a th:href="@{/home}" class="box__button">Go home</a>
+
+        </div>
+
+    </div>
+</main>
+<footer th:include="~{fragments/footer}"></footer>
+</body>
+<script type="text/javascript" th:inline="javascript">
+    var pageX = $(document).width();
+    var pageY = $(document).height();
+    var mouseY = 0;
+    var mouseX = 0;
+
+    $(document).mousemove(function (event) {
+        //verticalAxis
+        mouseY = event.pageY;
+        yAxis = (pageY / 2 - mouseY) / pageY * 300;
+        //horizontalAxis
+        mouseX = event.pageX / -pageX;
+        xAxis = -mouseX * 100 - 100;
+
+        $('.box__ghost-eyes').css({'transform': 'translate(' + xAxis + '%,-' + yAxis + '%)'});
+
+        //console.log('X: ' + xAxis);
+
+    });
+</script>
+</html>

@@ -4,9 +4,15 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.User;
 import org.nbakalov.flowerscompany.data.repositories.UserRepository;
+import org.nbakalov.flowerscompany.errors.WrongPasswordException;
+import org.nbakalov.flowerscompany.errors.dublicates.UserAllreadyExistException;
+import org.nbakalov.flowerscompany.errors.dublicates.UserWithThisEmailAllreadyExist;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalOrderServiceModelException;
+import org.nbakalov.flowerscompany.errors.notfound.UserNotFoundException;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.services.RoleService;
 import org.nbakalov.flowerscompany.services.services.UserService;
+import org.nbakalov.flowerscompany.services.validations.UserServiceModelValidatorService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,12 +33,25 @@ public class UserServiceImpl implements UserService {
   private final RoleService roleService;
   private final ModelMapper modelMapper;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final UserServiceModelValidatorService validatorService;
 
   @Override
   public UserServiceModel registerUser(UserServiceModel userServiceModel) {
-    roleService.seedRolesInDb();
+
+    if (!validatorService.isValid(userServiceModel)) {
+      throw new IllegalOrderServiceModelException(USER_BAD_CREDENTIALS);
+    }
+
+    if (userRepository.findByUsername(userServiceModel.getUsername()).isPresent()) {
+      throw new UserAllreadyExistException(USER_ALLREADY_EXIST);
+    }
+
+    if (userRepository.findByEmail(userServiceModel.getEmail()).isPresent()) {
+      throw new UserWithThisEmailAllreadyExist(USER_ALLREADY_WITH_EMAIL_EXIST);
+    }
 
     if (userRepository.count() == 0) {
+      roleService.seedRolesInDb();
       userServiceModel.setAuthorities(roleService.findAllRoles());
     } else {
       userServiceModel.setAuthorities(new LinkedHashSet<>());
@@ -51,10 +70,10 @@ public class UserServiceImpl implements UserService {
   public UserServiceModel editUserProfile(UserServiceModel userServiceModel, String oldPassword) {
 
     User user = userRepository.findByUsername(userServiceModel.getUsername())
-            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     if (!bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
-      throw new IllegalArgumentException(WRONG_PASSWORD_MESSAGE);
+      throw new WrongPasswordException(WRONG_PASSWORD);
     }
 
     user.setPassword(userServiceModel.getPassword() != null
@@ -72,7 +91,7 @@ public class UserServiceImpl implements UserService {
   public UserServiceModel findByUsername(String username) {
     return userRepository.findByUsername(username)
             .map(user -> modelMapper.map(user, UserServiceModel.class))
-            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
   }
 
   @Override
@@ -87,7 +106,7 @@ public class UserServiceImpl implements UserService {
   public void setUserRole(String id, String role) {
 
     User user = userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(WRONG_ID_MESSAGE));
+            .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
     UserServiceModel userServiceModel = modelMapper.map(user, UserServiceModel.class);
 
@@ -106,6 +125,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return userRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException(USERNAME_NOT_FOUND_MESSAGE));
+            .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
   }
 }

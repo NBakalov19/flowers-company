@@ -1,19 +1,19 @@
-package org.nbakalov.flowerscompany.web.models.view.flowerBatch;
-
+package org.nbakalov.flowerscompany.web.models.view.flowerbatch;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.nbakalov.flowerscompany.data.models.entities.Variety;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class FlowerBatchDeleteViewModel {
+public class FlowersBatchViewModel {
 
   private String id;
   private String teamSupervisor;
   private String fieldName;
-  private String variety;
+  private Variety variety;
   private Integer trays;
   private Integer bunchesPerTray;
   private String warehouse;

@@ -6,10 +6,14 @@ import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
 import org.nbakalov.flowerscompany.data.models.entities.Variety;
 import org.nbakalov.flowerscompany.data.models.models.flowers.MoveBatchModel;
 import org.nbakalov.flowerscompany.data.repositories.FlowersBatchRepository;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalFlowersBatchServiceModelException;
+import org.nbakalov.flowerscompany.errors.notfound.FlowersBatchNotFoundException;
+import org.nbakalov.flowerscompany.errors.unabled.NotPossibleToRegisterBatchException;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.services.validations.FlowersBatchServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
@@ -26,11 +30,16 @@ import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.*;
 public class FlowersBatchServiceImpl implements FlowersBatchService {
 
   private final FlowersBatchRepository flowersBatchRepository;
+  private final FlowersBatchServiceModelValidatorService validatorService;
   private final WarehouseService warehouseService;
   private final ModelMapper modelMapper;
 
   @Override
   public FlowersBatchServiceModel registerBatch(FlowersBatchServiceModel flowersBatchServiceModel) {
+
+    if (!validatorService.isValid(flowersBatchServiceModel)) {
+      throw new IllegalFlowersBatchServiceModelException(FLOWERS_BATCH_BAD_CREDENTIALS);
+    }
 
     flowersBatchServiceModel.setDatePicked(TODAY);
 
@@ -52,7 +61,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     FlowersBatchServiceModel serviceModel =
             flowersBatchRepository.findById(id)
                     .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-                    .orElseThrow(() -> new NoResultException("Flower batch not found."));
+                    .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
 
     hasRoomInWarehouse(serviceModel.getWarehouse(), updateModel);
 
@@ -112,7 +121,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     FlowersBatchServiceModel flowersBatchServiceModel = flowersBatchRepository.findById(id)
             .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
+            .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
 
     WarehouseServiceModel oldWarehouse =
             warehouseService.findWarehouseById(flowersBatchServiceModel.getWarehouse().getId());
@@ -120,10 +129,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     WarehouseServiceModel newWarehouse =
             warehouseService.findWarehouseById(model.warehouse);
 
-    if (flowersBatchServiceModel.getTrays() + newWarehouse.getCurrCapacity() >= newWarehouse.getMaxCapacity()) {
-      throw new IllegalArgumentException(
-              String.format(NOT_POSSIBLE_TO_REGISTER, newWarehouse.getName()));
-    }
+    hasRoomInWarehouse(newWarehouse, flowersBatchServiceModel);
 
     flowersBatchServiceModel.setWarehouse(newWarehouse);
 
@@ -144,7 +150,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   public void deleteBatch(String id) {
 
     flowersBatchRepository.findById(id)
-            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
+            .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
 
     flowersBatchRepository.deleteById(id);
   }
@@ -155,7 +161,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     int currCapacity = warehouseServiceModel.getCurrCapacity();
 
     if (currCapacity + flowersBatchServiceModel.getTrays() > warehouseServiceModel.getMaxCapacity()) {
-      throw new IllegalArgumentException(
+      throw new NotPossibleToRegisterBatchException(
               String.format(NOT_POSSIBLE_TO_REGISTER, warehouseServiceModel.getName()));
     }
   }

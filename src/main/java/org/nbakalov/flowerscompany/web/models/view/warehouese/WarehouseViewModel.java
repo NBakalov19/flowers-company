@@ -3,7 +3,7 @@ package org.nbakalov.flowerscompany.web.models.view.warehouese;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.nbakalov.flowerscompany.web.models.view.flowerBatch.FlowersBatchViewModel;
+import org.nbakalov.flowerscompany.web.models.view.flowerbatch.FlowersBatchViewModel;
 
 import java.util.Set;
 
