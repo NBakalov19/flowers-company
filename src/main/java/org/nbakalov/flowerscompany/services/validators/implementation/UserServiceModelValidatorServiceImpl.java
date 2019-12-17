@@ -1,7 +1,7 @@
-package org.nbakalov.flowerscompany.services.validations.implementation;
+package org.nbakalov.flowerscompany.services.validators.implementation;
 
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
-import org.nbakalov.flowerscompany.services.validations.UserServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.UserServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 @Service

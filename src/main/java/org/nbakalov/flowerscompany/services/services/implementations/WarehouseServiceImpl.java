@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Warehouse;
 import org.nbakalov.flowerscompany.data.repositories.WarehouseRepository;
-import org.nbakalov.flowerscompany.errors.unabled.NotPossibleToEmptyWarehouseException;
 import org.nbakalov.flowerscompany.errors.dublicates.WarehouseAllreadyExistException;
 import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalWarehouseServiceModelException;
 import org.nbakalov.flowerscompany.errors.notfound.WarehouseNotFoundException;
+import org.nbakalov.flowerscompany.errors.unabled.NotPossibleToEmptyWarehouseException;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
+import org.nbakalov.flowerscompany.services.models.LogServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
+import org.nbakalov.flowerscompany.services.services.LogService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
-import org.nbakalov.flowerscompany.services.validations.WarehouseServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.WarehouseServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.LogConstants.*;
 import static org.nbakalov.flowerscompany.constants.WarehouseConstants.*;
 
 @Service
@@ -27,25 +30,31 @@ public class WarehouseServiceImpl implements WarehouseService {
 
   private final WarehouseRepository warehouseRepository;
   private final WarehouseServiceModelValidatorService validatorService;
+  private final LogService logService;
   private final ModelMapper modelMapper;
 
   @Override
-  public WarehouseServiceModel createWarehouse(WarehouseServiceModel warehouseServiceModel) {
+  public WarehouseServiceModel createWarehouse(WarehouseServiceModel serviceModel, String currentUser) {
 
-    if (!validatorService.isValid(warehouseServiceModel)) {
+    if (!validatorService.isValid(serviceModel)) {
       throw new IllegalWarehouseServiceModelException(WAREHOUSE_BAD_CREDENTIALS);
     }
 
-    if (warehouseRepository.findByName(warehouseServiceModel.getName()).isPresent()) {
+    if (warehouseRepository.findByName(serviceModel.getName()).isPresent()) {
       throw new WarehouseAllreadyExistException(WAREHOUSE_ALLREADY_EXIST);
     }
 
-    warehouseServiceModel.setTemperature(getRandomNumber());
-    warehouseServiceModel.setBatches(new LinkedHashSet<>());
-    warehouseServiceModel.setCurrCapacity(INITIAL_CURRENT_CAPACITY);
+    serviceModel.setTemperature(getRandomNumber());
+    serviceModel.setBatches(new LinkedHashSet<>());
+    serviceModel.setCurrCapacity(INITIAL_CURRENT_CAPACITY);
 
-    Warehouse warehouse = modelMapper.map(warehouseServiceModel, Warehouse.class);
+    Warehouse warehouse = modelMapper.map(serviceModel, Warehouse.class);
     warehouseRepository.saveAndFlush(warehouse);
+
+    LogServiceModel log =
+            createLog(currentUser, String.format(CREATED_WAREHOUSE, warehouse.getName()));
+
+    logService.saveLog(log);
 
     return modelMapper.map(warehouse, WarehouseServiceModel.class);
   }
@@ -75,9 +84,11 @@ public class WarehouseServiceImpl implements WarehouseService {
   }
 
   @Override
-  public WarehouseServiceModel editWarehouse(String id, WarehouseServiceModel warehouseServiceModel) {
+  public WarehouseServiceModel editWarehouse(String warehouseId,
+                                             WarehouseServiceModel serviceModel,
+                                             String currentUser) {
 
-    Warehouse warehouse = warehouseRepository.findById(id)
+    Warehouse warehouse = warehouseRepository.findById(warehouseId)
             .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     Set<FlowersBatchServiceModel> batches = warehouse.getBatches()
@@ -85,21 +96,30 @@ public class WarehouseServiceImpl implements WarehouseService {
             .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
             .collect(Collectors.toSet());
 
-    warehouseServiceModel.setBatches(batches);
+    serviceModel.setBatches(batches);
 
-    return modelMapper.map(warehouseRepository.saveAndFlush(warehouse), WarehouseServiceModel.class);
+    warehouseRepository.saveAndFlush(warehouse);
+
+    LogServiceModel log = createLog(currentUser, String.format(EDITED_WAREHOUSE, warehouse.getName()));
+    logService.saveLog(log);
+
+    return modelMapper.map(warehouse, WarehouseServiceModel.class);
   }
 
   @Override
-  public void deleteWarehouse(String id) {
+  public void deleteWarehouse(String id, String currentUser) {
     Warehouse warehouse = warehouseRepository.findById(id)
             .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
 
     warehouseRepository.delete(warehouse);
+
+    LogServiceModel log = createLog(currentUser, String.format(DELETED_WAREHOUSE, warehouse.getName()));
+
+    logService.saveLog(log);
   }
 
   @Override
-  public void emptyWarehouse(String id) {
+  public void emptyWarehouse(String id, String currentUser) {
 
     if (warehouseRepository.count() == 1) {
       throw new IllegalArgumentException(NOT_POSSIBLE_TO_EMPTY);
@@ -129,19 +149,25 @@ public class WarehouseServiceImpl implements WarehouseService {
     } else {
       throw new NotPossibleToEmptyWarehouseException(NOT_POSSIBLE_TO_EMPTY);
     }
+
+    LogServiceModel log =
+            createLog(currentUser,
+                    String.format(MOVE_ALL_BATCHES, warehouse.getName(), emptiestWarehouse.getName()));
+
+    logService.saveLog(log);
   }
 
   @Override
-  public WarehouseServiceModel updateCurrCapacity(WarehouseServiceModel warehouseServiceModel) {
+  public WarehouseServiceModel updateCurrCapacity(WarehouseServiceModel serviceModel) {
 
-    int currCapacity = warehouseServiceModel.getBatches()
+    int currCapacity = serviceModel.getBatches()
             .stream()
             .mapToInt(FlowersBatchServiceModel::getTrays)
             .sum();
 
-    warehouseServiceModel.setCurrCapacity(currCapacity);
+    serviceModel.setCurrCapacity(currCapacity);
 
-    Warehouse warehouse = modelMapper.map(warehouseServiceModel, Warehouse.class);
+    Warehouse warehouse = modelMapper.map(serviceModel, Warehouse.class);
 
     return modelMapper.map(warehouseRepository.saveAndFlush(warehouse), WarehouseServiceModel.class);
   }
@@ -158,5 +184,15 @@ public class WarehouseServiceImpl implements WarehouseService {
     return (Math.random()
             * ((MAX_WAREHOUSE_TEMPERATURE - MIN_WAREHOUSE_TEMPERATURE) + 1))
             + MIN_WAREHOUSE_TEMPERATURE;
+  }
+
+  private LogServiceModel createLog(String username, String description) {
+
+    LogServiceModel log = new LogServiceModel();
+    log.setCreatedOn(NOW);
+    log.setUsername(username);
+    log.setDescription(description);
+
+    return log;
   }
 }

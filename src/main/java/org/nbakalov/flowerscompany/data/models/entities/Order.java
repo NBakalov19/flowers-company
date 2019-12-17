@@ -3,11 +3,12 @@ package org.nbakalov.flowerscompany.data.models.entities;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.nbakalov.flowerscompany.data.models.enums.Status;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity

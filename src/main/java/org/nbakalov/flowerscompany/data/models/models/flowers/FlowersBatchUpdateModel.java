@@ -3,7 +3,7 @@ package org.nbakalov.flowerscompany.data.models.models.flowers;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 
 @NoArgsConstructor
 @Getter

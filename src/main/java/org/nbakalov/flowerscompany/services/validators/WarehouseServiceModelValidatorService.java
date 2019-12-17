@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.services.validations;
+package org.nbakalov.flowerscompany.services.validators;
 
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 

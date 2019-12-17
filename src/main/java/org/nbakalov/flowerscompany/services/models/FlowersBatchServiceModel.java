@@ -3,7 +3,7 @@ package org.nbakalov.flowerscompany.services.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 
 import java.time.LocalDateTime;
 

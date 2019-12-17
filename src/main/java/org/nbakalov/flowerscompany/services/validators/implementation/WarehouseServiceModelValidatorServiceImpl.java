@@ -1,7 +1,7 @@
-package org.nbakalov.flowerscompany.services.validations.implementation;
+package org.nbakalov.flowerscompany.services.validators.implementation;
 
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
-import org.nbakalov.flowerscompany.services.validations.WarehouseServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.WarehouseServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +14,7 @@ public class WarehouseServiceModelValidatorServiceImpl implements WarehouseServi
   }
 
   boolean isWarehouseNameValid(String name) {
-    return name.length() >= 3 && name.length() <= 20;
+    return name.length() >= 4 && name.length() <= 20;
   }
 
   boolean isWarehouseMaxCapacityValid(Integer maxCapacity) {

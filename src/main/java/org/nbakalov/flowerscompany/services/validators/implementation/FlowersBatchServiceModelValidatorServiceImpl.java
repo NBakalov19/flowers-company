@@ -1,8 +1,8 @@
-package org.nbakalov.flowerscompany.services.validations.implementation;
+package org.nbakalov.flowerscompany.services.validators.implementation;
 
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
-import org.nbakalov.flowerscompany.services.validations.FlowersBatchServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.FlowersBatchServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

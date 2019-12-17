@@ -18,5 +18,5 @@ public interface OrderService {
 
   void cancelOrder(String id);
 
-  void reviewOrder(String id);
+  void reviewOrder(String id, String currentUser);
 }

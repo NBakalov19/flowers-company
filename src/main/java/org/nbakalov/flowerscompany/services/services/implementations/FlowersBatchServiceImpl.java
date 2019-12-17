@@ -3,17 +3,19 @@ package org.nbakalov.flowerscompany.services.services.implementations;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.data.models.models.flowers.MoveBatchModel;
 import org.nbakalov.flowerscompany.data.repositories.FlowersBatchRepository;
 import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalFlowersBatchServiceModelException;
 import org.nbakalov.flowerscompany.errors.notfound.FlowersBatchNotFoundException;
 import org.nbakalov.flowerscompany.errors.unabled.NotPossibleToRegisterBatchException;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
+import org.nbakalov.flowerscompany.services.models.LogServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
+import org.nbakalov.flowerscompany.services.services.LogService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
-import org.nbakalov.flowerscompany.services.validations.FlowersBatchServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.FlowersBatchServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
@@ -24,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.*;
+import static org.nbakalov.flowerscompany.constants.LogConstants.*;
 
 @Service
 @AllArgsConstructor
@@ -32,31 +35,37 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   private final FlowersBatchRepository flowersBatchRepository;
   private final FlowersBatchServiceModelValidatorService validatorService;
   private final WarehouseService warehouseService;
+  private final LogService logService;
   private final ModelMapper modelMapper;
 
   @Override
-  public FlowersBatchServiceModel registerBatch(FlowersBatchServiceModel flowersBatchServiceModel) {
+  public FlowersBatchServiceModel registerBatch(FlowersBatchServiceModel serviceModel, String currentUser) {
 
-    if (!validatorService.isValid(flowersBatchServiceModel)) {
+    if (!validatorService.isValid(serviceModel)) {
       throw new IllegalFlowersBatchServiceModelException(FLOWERS_BATCH_BAD_CREDENTIALS);
     }
 
-    flowersBatchServiceModel.setDatePicked(TODAY);
+    serviceModel.setDatePicked(TODAY);
 
-    WarehouseServiceModel warehouseServiceModel = flowersBatchServiceModel.getWarehouse();
+    WarehouseServiceModel warehouseServiceModel = serviceModel.getWarehouse();
 
-    hasRoomInWarehouse(warehouseServiceModel, flowersBatchServiceModel);
+    hasRoomInWarehouse(warehouseServiceModel, serviceModel);
 
     FlowersBatch flowersBatch =
-            modelMapper.map(flowersBatchServiceModel, FlowersBatch.class);
+            modelMapper.map(serviceModel, FlowersBatch.class);
 
     flowersBatchRepository.saveAndFlush(flowersBatch);
+
+    LogServiceModel log = createLog(currentUser, CREATED_FLOWERS_BATCH);
+    logService.saveLog(log);
 
     return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
   }
 
   @Override
-  public FlowersBatchServiceModel editFlowerBatch(String id, FlowersBatchServiceModel updateModel) {
+  public FlowersBatchServiceModel editFlowerBatch(String id,
+                                                  FlowersBatchServiceModel updateModel,
+                                                  String currentUser) {
 
     FlowersBatchServiceModel serviceModel =
             flowersBatchRepository.findById(id)
@@ -73,6 +82,9 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
             modelMapper.map(serviceModel, FlowersBatch.class));
+
+    LogServiceModel log = createLog(currentUser, EDITED_FLOWERS_BATCH);
+    logService.saveLog(log);
 
     return modelMapper.map(flowersBatch, FlowersBatchServiceModel.class);
   }
@@ -117,7 +129,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   }
 
   @Override
-  public void moveBatch(String id, MoveBatchModel model) {
+  public void moveBatch(String id, MoveBatchModel model, String currentUser) {
 
     FlowersBatchServiceModel flowersBatchServiceModel = flowersBatchRepository.findById(id)
             .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
@@ -144,15 +156,22 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     warehouseService.updateCurrCapacity(oldWarehouse);
     warehouseService.updateCurrCapacity(newWarehouse);
 
+    LogServiceModel log = createLog(currentUser,
+            String.format(MOVED_FLOWERS_BATCH, oldWarehouse.getName(), newWarehouse.getName()));
+
+    logService.saveLog(log);
   }
 
   @Override
-  public void deleteBatch(String id) {
+  public void deleteBatch(String id, String currentUser) {
 
     flowersBatchRepository.findById(id)
             .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
 
     flowersBatchRepository.deleteById(id);
+
+    LogServiceModel log = createLog(currentUser, DELETED_FLOWERS_BATCH);
+    logService.saveLog(log);
   }
 
   private void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,
@@ -164,5 +183,15 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
       throw new NotPossibleToRegisterBatchException(
               String.format(NOT_POSSIBLE_TO_REGISTER, warehouseServiceModel.getName()));
     }
+  }
+
+  private LogServiceModel createLog(String username, String description) {
+
+    LogServiceModel log = new LogServiceModel();
+    log.setCreatedOn(NOW);
+    log.setUsername(username);
+    log.setDescription(description);
+
+    return log;
   }
 }

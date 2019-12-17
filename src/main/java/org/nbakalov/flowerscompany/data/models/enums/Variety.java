@@ -1,4 +1,4 @@
-package org.nbakalov.flowerscompany.data.models.entities;
+package org.nbakalov.flowerscompany.data.models.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package org.nbakalov.flowerscompany.data.repositories;
 
 import org.nbakalov.flowerscompany.data.models.entities.FlowersBatch;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,9 +1,9 @@
-package org.nbakalov.flowerscompany.services.validations.implementation;
+package org.nbakalov.flowerscompany.services.validators.implementation;
 
-import org.nbakalov.flowerscompany.data.models.entities.Status;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Status;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
-import org.nbakalov.flowerscompany.services.validations.OrderServiceModelValidatorService;
+import org.nbakalov.flowerscompany.services.validators.OrderServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,14 +14,12 @@ public class OrderServiceModelValidatorServiceImpl implements OrderServiceModelV
 
   private static final List<Integer> VALID_BUNCHES_PER_TRAY_COUNT = List.of(10, 15, 16, 17, 18, 20, 25);
   private static final List<Variety> VALID_VARIETIES = Variety.stream().collect(Collectors.toList());
-  private static final List<Status> VALID_STATUS = Status.stream().collect(Collectors.toList());
 
   @Override
   public boolean isValid(OrderServiceModel model) {
     return isVarietyValid(model.getVariety())
             && areQuantityValid(model.getQuantity())
-            && areBunchesPerTrayValid(model.getBunchesPerTray())
-            && isStatusValid(model.getStatus());
+            && areBunchesPerTrayValid(model.getBunchesPerTray());
   }
 
   private boolean isVarietyValid(Variety variety) {
@@ -29,7 +27,7 @@ public class OrderServiceModelValidatorServiceImpl implements OrderServiceModelV
   }
 
   private boolean areQuantityValid(Integer trays) {
-    return trays >= 1 && trays <= 1000;
+    return trays >= 1 && trays <= 10000;
   }
 
   private boolean areBunchesPerTrayValid(Integer bunchesPerTray) {
@@ -37,7 +35,4 @@ public class OrderServiceModelValidatorServiceImpl implements OrderServiceModelV
     return VALID_BUNCHES_PER_TRAY_COUNT.contains(bunchesPerTray);
   }
 
-  private boolean isStatusValid(Status status) {
-    return VALID_STATUS.contains(status);
-  }
 }

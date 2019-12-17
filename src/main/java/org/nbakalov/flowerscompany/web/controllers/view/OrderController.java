@@ -2,7 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderUpdateModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
@@ -145,9 +145,9 @@ public class OrderController extends BaseController {
 
   @PostMapping("/review-order/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView reviewOrder(@PathVariable String id) {
+  public ModelAndView reviewOrder(@PathVariable String id, Principal principal) {
 
-    orderService.reviewOrder(id);
+    orderService.reviewOrder(id, principal.getName());
 
     return redirect("/orders/all");
   }

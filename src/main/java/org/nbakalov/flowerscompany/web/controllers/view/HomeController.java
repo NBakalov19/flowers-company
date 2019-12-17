@@ -44,7 +44,7 @@ public class HomeController extends BaseController {
 
   @GetMapping("/home")
   @PageTitle(HOME)
-  public ModelAndView loginPageRedirect(Authentication authResult, ModelAndView modelAndView, Principal principal) {
+  public ModelAndView home(Authentication authResult, ModelAndView modelAndView, Principal principal) {
 
     Set<String> userRoles = getUserRoles(authResult);
 

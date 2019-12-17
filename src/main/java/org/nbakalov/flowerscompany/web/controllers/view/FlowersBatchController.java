@@ -2,7 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.data.models.entities.Variety;
+import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.flowers.FlowersBatchUpdateModel;
 import org.nbakalov.flowerscompany.data.models.models.flowers.MoveBatchModel;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,8 @@ public class FlowersBatchController extends BaseController {
 
   @PostMapping("/create-batch")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView createFlowersBatchConfirm(@ModelAttribute FlowersBatchCreateModel createModel) {
+  public ModelAndView createFlowersBatchConfirm(@ModelAttribute FlowersBatchCreateModel createModel,
+                                                Principal principal) {
 
     FlowersBatchServiceModel serviceModel =
             modelMapper.map(createModel, FlowersBatchServiceModel.class);
@@ -56,7 +58,7 @@ public class FlowersBatchController extends BaseController {
 
     serviceModel.setWarehouse(warehouseServiceModel);
 
-    flowersBatchService.registerBatch(serviceModel);
+    flowersBatchService.registerBatch(serviceModel, principal.getName());
 
     return redirect("/flowers/todays-batches");
   }
@@ -96,12 +98,13 @@ public class FlowersBatchController extends BaseController {
   @PostMapping("/edit-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   public ModelAndView editFlowersBatchConfirm(@PathVariable String id,
-                                              @ModelAttribute FlowersBatchUpdateModel updateModel) {
+                                              @ModelAttribute FlowersBatchUpdateModel updateModel,
+                                              Principal principal) {
 
     FlowersBatchServiceModel serviceModel =
             modelMapper.map(updateModel, FlowersBatchServiceModel.class);
 
-    flowersBatchService.editFlowerBatch(id, serviceModel);
+    flowersBatchService.editFlowerBatch(id, serviceModel, principal.getName());
 
     return redirect("/flowers/todays-batches");
   }
@@ -123,9 +126,11 @@ public class FlowersBatchController extends BaseController {
 
   @PostMapping("/move-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView moveFlowersBatchConfirm(@PathVariable String id, @ModelAttribute MoveBatchModel model) {
+  public ModelAndView moveFlowersBatchConfirm(@PathVariable String id,
+                                              @ModelAttribute MoveBatchModel model,
+                                              Principal principal) {
 
-    flowersBatchService.moveBatch(id, model);
+    flowersBatchService.moveBatch(id, model, principal.getName());
 
     return redirect("/flowers/todays-batches");
   }
@@ -148,9 +153,9 @@ public class FlowersBatchController extends BaseController {
 
   @PostMapping("/delete-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView deleteFlowersBatch(@PathVariable String id) {
+  public ModelAndView deleteFlowersBatch(@PathVariable String id, Principal principal) {
 
-    flowersBatchService.deleteBatch(id);
+    flowersBatchService.deleteBatch(id, principal.getName());
 
     return redirect("/flowers/todays-batches");
   }
