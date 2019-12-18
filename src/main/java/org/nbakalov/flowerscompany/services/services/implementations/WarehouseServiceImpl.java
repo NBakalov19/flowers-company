@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.LogConstants.*;
@@ -79,24 +78,19 @@ public class WarehouseServiceImpl implements WarehouseService {
     return warehouseRepository.findById(id)
             .map(warehouse -> modelMapper.map(warehouse, WarehouseServiceModel.class))
             .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
-
-    //TODO EXCEPTION
   }
 
   @Override
   public WarehouseServiceModel editWarehouse(String warehouseId,
-                                             WarehouseServiceModel serviceModel,
+                                             WarehouseServiceModel updateModel,
                                              String currentUser) {
 
-    Warehouse warehouse = warehouseRepository.findById(warehouseId)
-            .orElseThrow(() -> new WarehouseNotFoundException(WAREHOUSE_NOT_FOUND));
+    WarehouseServiceModel serviceModel = findWarehouseById(warehouseId);
 
-    Set<FlowersBatchServiceModel> batches = warehouse.getBatches()
-            .stream()
-            .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .collect(Collectors.toSet());
+    serviceModel.setName(updateModel.getName());
+    serviceModel.setMaxCapacity(updateModel.getMaxCapacity());
 
-    serviceModel.setBatches(batches);
+    Warehouse warehouse = modelMapper.map(serviceModel, Warehouse.class);
 
     warehouseRepository.saveAndFlush(warehouse);
 

@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.PageTitleConstants.HOME;
-import static org.nbakalov.flowerscompany.constants.PageTitleConstants.INDEX;
 import static org.nbakalov.flowerscompany.constants.RoleConstants.*;
 
 @Controller
@@ -35,9 +34,9 @@ public class HomeController extends BaseController {
   private final OrderService orderService;
   private final ModelMapper modelMapper;
 
-  @GetMapping("/index")
+  @GetMapping("/")
   @PreAuthorize("isAnonymous()")
-  @PageTitle(INDEX)
+  @PageTitle
   public ModelAndView index() {
     return view("index");
   }

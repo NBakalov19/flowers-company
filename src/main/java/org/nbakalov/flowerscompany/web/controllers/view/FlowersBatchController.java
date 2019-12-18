@@ -10,12 +10,15 @@ import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.models.WarehouseServiceModel;
 import org.nbakalov.flowerscompany.services.services.FlowersBatchService;
 import org.nbakalov.flowerscompany.services.services.WarehouseService;
+import org.nbakalov.flowerscompany.validations.flowers.FlowersBatchCreateValidation;
+import org.nbakalov.flowerscompany.validations.flowers.FlowersBatchUpdateValidation;
 import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.flowerbatch.FlowerBatchDeleteViewModel;
 import org.nbakalov.flowerscompany.web.models.view.flowerbatch.FlowersBatchViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,24 +34,40 @@ import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 public class FlowersBatchController extends BaseController {
 
   private final FlowersBatchService flowersBatchService;
+  private final FlowersBatchCreateValidation flowersBatchCreateValidation;
+  private final FlowersBatchUpdateValidation flowersBatchUpdateValidation;
   private final WarehouseService warehouseService;
   private final ModelMapper modelMapper;
 
   @GetMapping("/create-batch")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   @PageTitle(CREATE_FLOWERS_BATCH)
-  public ModelAndView createFlowersBatch(ModelAndView modelAndView) {
+  public ModelAndView createFlowersBatch(ModelAndView modelAndView,
+                                         @ModelAttribute FlowersBatchCreateModel createModel) {
 
     List<Variety> varieties = Variety.stream().collect(Collectors.toList());
     modelAndView.addObject("varieties", varieties);
+    modelAndView.addObject("flowersBatch", createModel);
 
     return view("/flowers/create-flowers-batch", modelAndView);
   }
 
   @PostMapping("/create-batch")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  public ModelAndView createFlowersBatchConfirm(@ModelAttribute FlowersBatchCreateModel createModel,
-                                                Principal principal) {
+  public ModelAndView createFlowersBatchConfirm(Principal principal,
+                                                ModelAndView modelAndView,
+                                                @ModelAttribute FlowersBatchCreateModel createModel,
+                                                BindingResult bindingResult) {
+
+    flowersBatchCreateValidation.validate(createModel, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      List<Variety> varieties = Variety.stream().collect(Collectors.toList());
+      modelAndView.addObject("varieties", varieties);
+      modelAndView.addObject("flowersBatch", createModel);
+
+      return view("/flowers/create-flowers-batch", modelAndView);
+    }
 
     FlowersBatchServiceModel serviceModel =
             modelMapper.map(createModel, FlowersBatchServiceModel.class);
@@ -87,19 +106,33 @@ public class FlowersBatchController extends BaseController {
     FlowersBatchViewModel viewModel =
             modelMapper.map(serviceModel, FlowersBatchViewModel.class);
 
-    modelAndView.addObject("batch", viewModel);
+    modelAndView.addObject("flowersBatch", viewModel);
 
     List<Variety> varieties = Variety.stream().collect(Collectors.toList());
     modelAndView.addObject("varieties", varieties);
 
-    return view("flowers/edit-flowers-batch", modelAndView);
+    return view("/flowers/edit-flowers-batch", modelAndView);
   }
 
   @PostMapping("/edit-batch/{id}")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   public ModelAndView editFlowersBatchConfirm(@PathVariable String id,
+                                              ModelAndView modelAndView,
                                               @ModelAttribute FlowersBatchUpdateModel updateModel,
-                                              Principal principal) {
+                                              Principal principal,
+                                              BindingResult bindingResult) {
+
+    flowersBatchUpdateValidation.validate(updateModel, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      updateModel = modelMapper.map(flowersBatchService.findBatchById(id), FlowersBatchUpdateModel.class);
+
+      List<Variety> varieties = Variety.stream().collect(Collectors.toList());
+      modelAndView.addObject("varieties", varieties);
+      modelAndView.addObject("flowersBatch", updateModel);
+
+      return view("/flowers/edit-flowers-batch", modelAndView);
+    }
 
     FlowersBatchServiceModel serviceModel =
             modelMapper.map(updateModel, FlowersBatchServiceModel.class);
@@ -121,7 +154,7 @@ public class FlowersBatchController extends BaseController {
     Long warehousesCount = warehouseService.getWarehousesCount();
     modelAndView.addObject("warehousesCount", warehousesCount);
 
-    return view("flowers/move-batch", modelAndView);
+    return view("/flowers/move-batch", modelAndView);
   }
 
   @PostMapping("/move-batch/{id}")
@@ -148,7 +181,7 @@ public class FlowersBatchController extends BaseController {
 
     modelAndView.addObject("batch", viewModel);
 
-    return view("flowers/delete-batch", modelAndView);
+    return view("/flowers/delete-batch", modelAndView);
   }
 
   @PostMapping("/delete-batch/{id}")

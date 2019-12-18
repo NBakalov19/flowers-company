@@ -2,7 +2,6 @@ package org.nbakalov.flowerscompany.services.services.implementations;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.nbakalov.flowerscompany.constants.FlowersBatchConstants;
 import org.nbakalov.flowerscompany.data.models.entities.Order;
 import org.nbakalov.flowerscompany.data.models.entities.User;
 import org.nbakalov.flowerscompany.data.models.enums.Status;
@@ -144,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
 
   private void deniesOrder(OrderServiceModel order, String currentUser) {
     order.setStatus(DENIED);
-    order.setFinishedOn(FlowersBatchConstants.TODAY);
+    order.setFinishedOn(TODAY);
     orderRepository.saveAndFlush(modelMapper.map(order, Order.class));
 
     LogServiceModel log = createLog(currentUser, REVIEW_ORDER);
@@ -153,7 +152,7 @@ public class OrderServiceImpl implements OrderService {
 
   private void approveOrder(OrderServiceModel order, String currentUser) {
     order.setStatus(APPROVED);
-    order.setFinishedOn(FlowersBatchConstants.TODAY);
+    order.setFinishedOn(TODAY);
     orderRepository.saveAndFlush(modelMapper.map(order, Order.class));
 
     LogServiceModel log = createLog(currentUser, REVIEW_ORDER);

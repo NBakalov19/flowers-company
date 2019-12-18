@@ -52,7 +52,7 @@
                                 <label for="orderDate" class="h3 mb-2">Order Date</label>
                             </div>
                             <input type="text" class="form-control" id="orderDate"
-                                   th:value="*{#temporals.format(orderDate, 'dd-MM-yyyy')}"
+                                   th:value="*{#temporals.format(orderDate, 'dd-MM-yyyy HH:mm')}"
                                    readonly="readonly">
                         </div>
                         <div class="button-holder d-flex justify-content-center">

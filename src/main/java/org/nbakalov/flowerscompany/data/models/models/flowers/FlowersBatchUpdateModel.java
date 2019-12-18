@@ -10,6 +10,7 @@ import org.nbakalov.flowerscompany.data.models.enums.Variety;
 @Setter
 public class FlowersBatchUpdateModel {
 
+  private String id;
   private String teamSupervisor;
   private String fieldName;
   private Variety variety;

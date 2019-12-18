@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <th:block th:include="~{fragments/head}"/>
 </head>
@@ -11,16 +11,16 @@
 </header>
 <main>
     <div class="container">
-        <div class="pt-5 mt-5">
+        <div class="pt-5 mt-5x">
             <div class="container-1">
                 <h1 class="text-center text-white">Register</h1>
                 <hr class="style13 w-25">
                 <form class="mx-auto w-25" th:action="@{/users/register}"
-                      th:method="post" enctype="multipart/form-data">
+                      th:method="post" th:object="${user}" enctype="multipart/form-data">
                     <input name="_csrf" type="hidden" value="80417983-fe8b-45c7-963e-31f6915a1569">
                     <div class="form-group">
                         <div class="label-holder textCol d-flex justify-content-center">
-                            <label for="username" class="h4 mb-2 text-white">
+                            <label for="username" class="h3 mb-2 text-white">
                                 Username
                                 <span class="asteriskField">*</span>
                             </label>
@@ -28,10 +28,13 @@
                         <input type="text" class="form-control" id="username"
                                name="username" required="required"
                                data-toggle="popover" data-content="From 3 to 20 symbols">
+                        <th:block th:if="${#fields.hasErrors('username')}">
+                            <small class="error" th:erorrs="*{username}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group">
                         <div class="label-holder text-white textCol d-flex justify-content-center">
-                            <label for="password" class="h4 mb-2">
+                            <label for="password" class="h3 mb-2">
                                 Password
                                 <span class="asteriskField">*</span>
                             </label>
@@ -39,10 +42,13 @@
                         <input type="password" class="form-control"
                                id="password" name="password" required="required"
                                data-toggle="popover" data-content="From 6 to 15 symbols"/>
+                        <th:block th:if="${#fields.hasErrors('password')}">
+                            <small class="error" th:errors="*{password}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group">
                         <div class="label-holder text-white textCol d-flex justify-content-center">
-                            <label for="confirmPassword" class="h4 mb-2">
+                            <label for="confirmPassword" class="h3 mb-2">
                                 Confirm Password
                                 <span class="asteriskField">*</span>
                             </label>
@@ -51,10 +57,13 @@
                                id="confirmPassword" name="confirmPassword"
                                required="required"
                                data-toggle="popover" data-content="Confirm Password"/>
+                        <th:block th:if="${#fields.hasErrors('password')}">
+                            <small class="error" th:errors="*{password}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group">
                         <div class="label-holder text-white textCol d-flex justify-content-center">
-                            <label for="email" class="h4 mb-2">
+                            <label for="email" class="h3 mb-2">
                                 Email
                                 <span class="asteriskField">*</span>
                             </label>
@@ -62,10 +71,13 @@
                         <input type="email" class="form-control" id="email"
                                name="email" required="required"
                                data-toggle="popover" data-content="Enter yours e-mail"/>
+                        <th:block th:if="${#fields.hasErrors('email')}">
+                            <small class="error" th:errors="*{email}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group align-content-center">
                         <div class="label-holder text-white textCol d-flex justify-content-center">
-                            <label for="profile-image" class="h4 mb-2">
+                            <label for="profile-image" class="h3 mb-2">
                                 Profile Image
                                 <span class="asteriskField">*</span>
                             </label>

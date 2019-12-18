@@ -26,7 +26,7 @@ public class TitleInterceptor extends HandlerInterceptorAdapter {
 
         if (methodAnnotation != null) {
           modelAndView
-                  .addObject("title", title + " - " + methodAnnotation.value());
+                  .addObject("title", title + methodAnnotation.value());
         }
       }
     }

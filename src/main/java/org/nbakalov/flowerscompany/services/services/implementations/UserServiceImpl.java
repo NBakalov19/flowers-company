@@ -8,6 +8,7 @@ import org.nbakalov.flowerscompany.errors.WrongPasswordException;
 import org.nbakalov.flowerscompany.errors.dublicates.UserAllreadyExistException;
 import org.nbakalov.flowerscompany.errors.dublicates.UserWithThisEmailAllreadyExist;
 import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalOrderServiceModelException;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalUserServiceModelException;
 import org.nbakalov.flowerscompany.errors.notfound.UserNotFoundException;
 import org.nbakalov.flowerscompany.services.models.LogServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
@@ -20,7 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,11 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
     if (userRepository.findByUsername(userServiceModel.getUsername()).isPresent()) {
-      throw new UserAllreadyExistException(USER_ALLREADY_EXIST);
+      throw new UserAllreadyExistException(
+              String.format(USERNAME_ALLREADY_EXIST, userServiceModel.getUsername()));
     }
 
     if (userRepository.findByEmail(userServiceModel.getEmail()).isPresent()) {
-      throw new UserWithThisEmailAllreadyExist(USER_ALLREADY_WITH_EMAIL_EXIST);
+      throw new UserWithThisEmailAllreadyExist(
+              String.format(USER_WITH_EMAIL_ALLREADY_EXIST, userServiceModel.getEmail()));
     }
 
     if (userRepository.count() == 0) {
@@ -82,7 +84,7 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     if (!bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
-      throw new WrongPasswordException(WRONG_PASSWORD);
+      throw new WrongPasswordException(PASSWORDS_NOT_MATCH);
     }
 
     user.setPassword(userServiceModel.getPassword() != null
@@ -90,6 +92,10 @@ public class UserServiceImpl implements UserService {
             : user.getPassword());
 
     user.setEmail(userServiceModel.getEmail());
+
+    if (!validatorService.isValid(userServiceModel)) {
+      throw new IllegalUserServiceModelException(USER_BAD_CREDENTIALS);
+    }
 
     userRepository.saveAndFlush(user);
 

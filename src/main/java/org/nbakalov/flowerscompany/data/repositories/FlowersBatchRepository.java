@@ -15,7 +15,7 @@ import java.util.List;
 public interface FlowersBatchRepository extends JpaRepository<FlowersBatch, String> {
 
 
-  List<FlowersBatch> findAllByDatePickedBetweenOrderByDatePicked(LocalDateTime beginOfDay, LocalDateTime endOfDay);
+  List<FlowersBatch> findAllByDatePickedBetweenOrderByDatePickedAsc(LocalDateTime beginOfDay, LocalDateTime endOfDay);
 
   List<FlowersBatch> findAllByBunchesPerTrayOrderByTrays(Integer bunchesPerTray);
 

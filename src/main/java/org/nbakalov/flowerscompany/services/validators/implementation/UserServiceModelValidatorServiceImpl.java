@@ -4,6 +4,8 @@ import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.validators.UserServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
+import static org.nbakalov.flowerscompany.constants.UserConstants.*;
+
 @Service
 public class UserServiceModelValidatorServiceImpl implements UserServiceModelValidatorService {
 
@@ -11,23 +13,21 @@ public class UserServiceModelValidatorServiceImpl implements UserServiceModelVal
   public boolean isValid(UserServiceModel model) {
     return isUsernameValid(model.getUsername())
             && isPasswordValid(model.getPassword())
-            && isEmailValid(model.getEmail())
-            && isProfilePictureValid(model.getProfilePictureUrl());
+            && isEmailValid(model.getEmail());
   }
 
   boolean isUsernameValid(String username) {
-    return username.length() >= 3 && username.length() <= 20;
+    return username.length() >= USERNAME_MIN_LENGTH
+            && username.length() <= USERNAME_MAX_LENGTH;
   }
 
   boolean isPasswordValid(String password) {
-    return password.length() >= 6 && password.length() <= 15;
+    return password.length() >= PASSWORD_MIN_LENGTH
+            && password.length() <= PASSWORD_MAX_LENGTH;
+
   }
 
   boolean isEmailValid(String email) {
     return !email.isEmpty();
-  }
-
-  boolean isProfilePictureValid(String picture) {
-    return !picture.isEmpty();
   }
 }

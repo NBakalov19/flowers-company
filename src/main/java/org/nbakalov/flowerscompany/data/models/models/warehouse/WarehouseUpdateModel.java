@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 public class WarehouseUpdateModel {
 
+  private String id;
   private String name;
   private Integer maxCapacity;
   private Integer currCapacity;

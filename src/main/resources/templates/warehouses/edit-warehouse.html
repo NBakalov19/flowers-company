@@ -1,5 +1,6 @@
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <th:block th:include="~{fragments/head}"/>
 </head>
@@ -21,8 +22,13 @@
                                 <span class="asteriskField">*</span>
                             </label>
                         </div>
-                        <input class="form-control" id="name" name="name" th:placeholder="*{name}"
-                               type="text"/>
+                        <input class="form-control" id="name" name="name" th:value="*{name}"
+                               type="text"
+                               data-toggle="popover"
+                               data-content="From 4 to 20 symbols"/>
+                        <th:block th:if="${#fields.hasErrors('name')}">
+                            <small class="error" th:erorrs="*{name}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group">
                         <div class="label-holder textCol d-flex justify-content-center">
@@ -43,8 +49,12 @@
                                 <span class="asteriskField">*</span>
                             </label>
                         </div>
-                        <input class="form-control" id="maxCapacity" name="maxCapacity" th:placeholder="*{maxCapacity}"
-                               type="text"/>
+                        <input class="form-control" id="maxCapacity" name="maxCapacity" th:value="*{maxCapacity}"
+                               type="number" min="2500"
+                               data-toggle="popover" data-content="Min 2500 Trays"/>
+                        <th:block th:if="${#fields.hasErrors('maxCapacity')}">
+                            <small class="error" th:erorrs="*{maxCapacity}"></small>
+                        </th:block>
                     </div>
                     <div class="form-group">
                         <div class="label-holder textCol d-flex justify-content-center">
@@ -54,7 +64,7 @@
                                 <span class="asteriskField">*</span>
                             </label>
                         </div>
-                        <input class="form-control" id="temperature" name="maxCapacity"
+                        <input class="form-control" id="temperature" name="temperature"
                                th:placeholder="*{#numbers.formatDecimal(temperature,1,2)}"
                                type="text" readonly/>
                     </div>

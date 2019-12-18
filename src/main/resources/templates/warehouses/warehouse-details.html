@@ -1,5 +1,6 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns="http://www.w3.org/1999/xhtml"
 >
 <head>
     <th:block th:include="~{fragments/head}"/>
@@ -47,7 +48,7 @@
                                     th:text="${iter.index + 1}"></th>
                                 <td class="col-md-1 text-center text-dark" th:text="*{variety}"></td>
                                 <td class="col-md-2 text-center text-dark"
-                                    th:text="*{#temporals.format(datePicked, 'dd-MM-yyyy')}"></td>
+                                    th:text="*{#temporals.format(datePicked, 'dd-MM-yyyy HH:mm')}"></td>
                                 <td class="col-md-1 text-center text-dark" th:text="*{trays}"></td>
                                 <td class="col-md-1 text-center text-dark" th:text="*{bunchesPerTray}"></td>
                                 <td class="col-md-2 text-center text-dark" th:text="*{teamSupervisor}"></td>

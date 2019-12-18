@@ -19,13 +19,12 @@ import org.nbakalov.flowerscompany.services.validators.FlowersBatchServiceModelV
 import org.springframework.stereotype.Service;
 
 import javax.persistence.NoResultException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.FlowersBatchConstants.*;
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.*;
 import static org.nbakalov.flowerscompany.constants.LogConstants.*;
 
 @Service
@@ -101,11 +100,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   @Override
   public List<FlowersBatchServiceModel> findAllBatchesRegisteredToday() {
 
-    LocalDate today = LocalDate.now();
-    LocalDateTime beginOfDay = today.atStartOfDay();
-    LocalDateTime endOfDay = today.atTime(23, 59, 59);
-
-    return flowersBatchRepository.findAllByDatePickedBetweenOrderByDatePicked(beginOfDay, endOfDay)
+    return flowersBatchRepository.findAllByDatePickedBetweenOrderByDatePickedAsc(BEGIN_OF_DAY, END_OF_DAY)
             .stream()
             .map(batch -> modelMapper.map(batch, FlowersBatchServiceModel.class))
             .collect(Collectors.toList());

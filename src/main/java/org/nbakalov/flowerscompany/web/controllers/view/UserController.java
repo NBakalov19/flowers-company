@@ -8,12 +8,15 @@ import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.services.CloudinaryService;
 import org.nbakalov.flowerscompany.services.services.UserService;
+import org.nbakalov.flowerscompany.validations.user.UserCreateValidation;
+import org.nbakalov.flowerscompany.validations.user.UserUpdateValidation;
 import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.user.AllUsersViewModel;
 import org.nbakalov.flowerscompany.web.models.view.user.UserProfileViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -31,6 +34,8 @@ import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 public class UserController extends BaseController {
 
   private final UserService userService;
+  private final UserCreateValidation userCreateValidation;
+  private final UserUpdateValidation userUpdateValidation;
   private final CloudinaryService cloudinaryService;
   private final ModelMapper modelMapper;
 
@@ -44,17 +49,28 @@ public class UserController extends BaseController {
   @GetMapping("/register")
   @PreAuthorize("isAnonymous()")
   @PageTitle(REGISTER)
-  public ModelAndView register() {
-    return view("/users/register");
+  public ModelAndView register(ModelAndView modelAndView,
+                               @ModelAttribute UserCreateModel createModel) {
+
+    modelAndView.addObject("user", createModel);
+
+    return view("/users/register", modelAndView);
   }
 
   @PostMapping("/register")
   @PreAuthorize("isAnonymous()")
-  public ModelAndView registerConfirm(@ModelAttribute UserCreateModel createModel) throws IOException {
+  public ModelAndView registerConfirm(ModelAndView modelAndView,
+                                      @ModelAttribute UserCreateModel createModel,
+                                      BindingResult bindingResult) throws IOException {
 
-    if (!createModel.getPassword().equals(createModel.getConfirmPassword())) {
+    userCreateValidation.validate(createModel, bindingResult);
 
-      return view("/users/register");
+    if (bindingResult.hasErrors()) {
+      createModel.setPassword(null);
+      createModel.setConfirmPassword(null);
+      modelAndView.addObject("user", createModel);
+
+      return view("/users/register", modelAndView);
     }
 
     UserServiceModel serviceModel =
@@ -86,31 +102,41 @@ public class UserController extends BaseController {
   @GetMapping("/edit")
   @PreAuthorize("isAuthenticated()")
   @PageTitle(EDIT_PROFILE)
-  public ModelAndView editProfile(Principal principal, ModelAndView modelAndView) {
+  public ModelAndView editProfile(Principal principal,
+                                  ModelAndView modelAndView,
+                                  @ModelAttribute UserUpdateModel updateModel) {
 
     UserServiceModel serviceModel =
             userService.findByUsername(principal.getName());
 
-    UserProfileViewModel profileModel = modelMapper.map(
-            serviceModel, UserProfileViewModel.class);
-
-    modelAndView.addObject("user", profileModel);
+    updateModel = modelMapper.map(serviceModel, UserUpdateModel.class);
+    updateModel.setPassword(null);
+    modelAndView.addObject("user", updateModel);
 
     return view("/users/edit-profile", modelAndView);
   }
 
   @PostMapping("/edit")
   @PreAuthorize("isAuthenticated()")
-  public ModelAndView editProfileConfirm(@ModelAttribute UserUpdateModel model) {
+  public ModelAndView editProfileConfirm(ModelAndView modelAndView,
+                                         @ModelAttribute UserUpdateModel updateModel,
+                                         BindingResult bindingResult) {
 
-    if (!model.getPassword().equals(model.getConfirmPassword())) {
-      return view("/users/edit-profile");
+    userUpdateValidation.validate(updateModel, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      updateModel.setOldPassword(null);
+      updateModel.setPassword(null);
+      updateModel.setConfirmPassword(null);
+
+      modelAndView.addObject("user", updateModel);
+      return view("/users/edit-profile", modelAndView);
     }
 
     UserServiceModel serviceModel =
-            modelMapper.map(model, UserServiceModel.class);
+            modelMapper.map(updateModel, UserServiceModel.class);
 
-    userService.editUserProfile(serviceModel, model.getOldPassword());
+    userService.editUserProfile(serviceModel, updateModel.getOldPassword());
 
     return redirect("/users/profile");
   }

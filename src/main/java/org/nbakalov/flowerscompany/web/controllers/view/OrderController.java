@@ -7,6 +7,7 @@ import org.nbakalov.flowerscompany.data.models.models.orders.OrderCreateModel;
 import org.nbakalov.flowerscompany.data.models.models.orders.OrderUpdateModel;
 import org.nbakalov.flowerscompany.services.models.OrderServiceModel;
 import org.nbakalov.flowerscompany.services.services.OrderService;
+import org.nbakalov.flowerscompany.validations.orders.OrderCreateValidation;
 import org.nbakalov.flowerscompany.web.annotations.PageTitle;
 import org.nbakalov.flowerscompany.web.controllers.BaseController;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderCancelViewModel;
@@ -14,6 +15,7 @@ import org.nbakalov.flowerscompany.web.models.view.order.OrderEditViewModel;
 import org.nbakalov.flowerscompany.web.models.view.order.OrderViewModel;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,22 +31,37 @@ import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 public class OrderController extends BaseController {
 
   private final OrderService orderService;
+  private final OrderCreateValidation orderCreateValidation;
   private final ModelMapper modelMapper;
 
   @GetMapping("/make-order")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @PageTitle(MAKE_ORDER)
-  public ModelAndView makeOrder(ModelAndView modelAndView) {
+  public ModelAndView makeOrder(ModelAndView modelAndView,
+                                @ModelAttribute OrderCreateModel createModel) {
 
     List<Variety> varieties = Variety.stream().collect(Collectors.toList());
     modelAndView.addObject("varieties", varieties);
+    modelAndView.addObject("order", createModel);
 
     return view("/orders/make-order", modelAndView);
   }
 
   @PostMapping("/make-order")
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
-  public ModelAndView makeOrderConfirm(@ModelAttribute OrderCreateModel createModel, Principal principal) {
+  public ModelAndView makeOrderConfirm(@ModelAttribute OrderCreateModel createModel,
+                                       Principal principal, ModelAndView modelAndView,
+                                       BindingResult bindingResult) {
+
+    orderCreateValidation.validate(createModel, bindingResult);
+
+    if (bindingResult.hasErrors()) {
+      createModel.setQuantity(null);
+
+      modelAndView.addObject("order", createModel);
+
+      return view("orders/make-order", modelAndView);
+    }
 
     OrderServiceModel serviceModel =
             modelMapper.map(createModel, OrderServiceModel.class);

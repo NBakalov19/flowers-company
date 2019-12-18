@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.BEGIN_OF_DAY;
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.END_OF_DAY;
+
 @Service
 @AllArgsConstructor
 public class LogServiceImpl implements LogService {
@@ -29,8 +32,8 @@ public class LogServiceImpl implements LogService {
   }
 
   @Override
-  public List<LogServiceModel> findAllLogs() {
-    return logRepository.findAllByOrderByCreatedOnDesc()
+  public List<LogServiceModel> findAllLogsFromToday() {
+    return logRepository.findAllByCreatedOnBetweenOrderByCreatedOnAsc(BEGIN_OF_DAY, END_OF_DAY)
             .stream()
             .map(log -> modelMapper.map(log, LogServiceModel.class))
             .collect(Collectors.toList());

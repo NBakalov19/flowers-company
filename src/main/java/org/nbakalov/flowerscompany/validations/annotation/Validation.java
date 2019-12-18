@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-public @interface Validator {
+public @interface Validation {
 
   @AliasFor(annotation = Component.class)
   String value() default "";

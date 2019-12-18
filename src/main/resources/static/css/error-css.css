@@ -10,7 +10,7 @@ html, body {
 }
 
 .box {
-    width: 350px;
+    width: 650px;
     height: 100%;
     max-height: 600px;
     min-height: 450px;
@@ -251,6 +251,7 @@ html, body {
 
 .box .box__description .box__button {
     display: block;
+    width: 250px;
     position: relative;
     background: #FF5E65;
     border: 1px solid transparent;

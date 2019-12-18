@@ -26,9 +26,16 @@ body {
 .mt-5 {
     margin-top: 5rem !important;
 }
+.mt-5x {
+    margin-top: 2rem !important;
+}
 
 .w-15 {
     width: 22%;
+}
+
+.w-25 {
+    width: 30% !important;
 }
 
 

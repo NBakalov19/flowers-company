@@ -8,5 +8,5 @@ public interface LogService {
 
   LogServiceModel saveLog(LogServiceModel model);
 
-  List<LogServiceModel> findAllLogs();
+  List<LogServiceModel> findAllLogsFromToday();
 }
