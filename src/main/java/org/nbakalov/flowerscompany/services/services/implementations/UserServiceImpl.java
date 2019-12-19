@@ -7,7 +7,6 @@ import org.nbakalov.flowerscompany.data.repositories.UserRepository;
 import org.nbakalov.flowerscompany.errors.WrongPasswordException;
 import org.nbakalov.flowerscompany.errors.dublicates.UserAllreadyExistException;
 import org.nbakalov.flowerscompany.errors.dublicates.UserWithThisEmailAllreadyExist;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalOrderServiceModelException;
 import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalUserServiceModelException;
 import org.nbakalov.flowerscompany.errors.notfound.UserNotFoundException;
 import org.nbakalov.flowerscompany.services.models.LogServiceModel;
@@ -44,7 +43,7 @@ public class UserServiceImpl implements UserService {
   public UserServiceModel registerUser(UserServiceModel userServiceModel) {
 
     if (!validatorService.isValid(userServiceModel)) {
-      throw new IllegalOrderServiceModelException(USER_BAD_CREDENTIALS);
+      throw new IllegalUserServiceModelException(USER_BAD_CREDENTIALS);
     }
 
     if (userRepository.findByUsername(userServiceModel.getUsername()).isPresent()) {
@@ -122,7 +121,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void setUserRole(String id, String role) {
+  public UserServiceModel setUserRole(String id, String role) {
 
     User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -145,7 +144,11 @@ public class UserServiceImpl implements UserService {
 
     logService.saveLog(log);
 
-    userRepository.saveAndFlush(modelMapper.map(userServiceModel, User.class));
+    User promotedUser = modelMapper.map(userServiceModel, User.class);
+
+    userRepository.saveAndFlush(promotedUser);
+
+    return modelMapper.map(promotedUser, UserServiceModel.class);
   }
 
   @Override
