@@ -1,5 +1,6 @@
 package org.nbakalov.flowerscompany.services.validators.implementation;
 
+import lombok.NoArgsConstructor;
 import org.nbakalov.flowerscompany.data.models.enums.Variety;
 import org.nbakalov.flowerscompany.services.models.FlowersBatchServiceModel;
 import org.nbakalov.flowerscompany.services.validators.FlowersBatchServiceModelValidatorService;
@@ -9,6 +10,7 @@ import static org.nbakalov.flowerscompany.constants.GlobalConstants.VALID_BUNCHE
 import static org.nbakalov.flowerscompany.constants.GlobalConstants.VALID_VARIETIES;
 
 @Service
+@NoArgsConstructor
 public class FlowersBatchServiceModelValidatorServiceImpl implements FlowersBatchServiceModelValidatorService {
 
   @Override

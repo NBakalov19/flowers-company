@@ -116,8 +116,7 @@ public class WarehouseServiceImpl implements WarehouseService {
   public void emptyWarehouse(String id, String currentUser) {
 
     if (warehouseRepository.count() == 1) {
-      throw new IllegalArgumentException(NOT_POSSIBLE_TO_EMPTY);
-      //TODO NotPossibleToEmptyWarehouseException
+      throw new NotPossibleToEmptyWarehouseException(NOT_POSSIBLE_TO_EMPTY);
     }
 
     Warehouse warehouse = warehouseRepository.findById(id)
@@ -163,17 +162,19 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     Warehouse warehouse = modelMapper.map(serviceModel, Warehouse.class);
 
-    return modelMapper.map(warehouseRepository.saveAndFlush(warehouse), WarehouseServiceModel.class);
+    warehouseRepository.saveAndFlush(warehouse);
+
+    return modelMapper.map(warehouse, WarehouseServiceModel.class);
   }
 
-  private boolean isPossibleToMoveStock(int firstWarehouseCurrCapacity,
-                                        int secondWarehouseCurrCapacity,
-                                        int secondWarehouseMaxCapacity) {
+  public boolean isPossibleToMoveStock(int firstWarehouseCurrCapacity,
+                                       int secondWarehouseCurrCapacity,
+                                       int secondWarehouseMaxCapacity) {
     return firstWarehouseCurrCapacity + secondWarehouseCurrCapacity <= secondWarehouseMaxCapacity;
   }
 
 
-  private Double getRandomNumber() {
+  public Double getRandomNumber() {
 
     return (Math.random()
             * ((MAX_WAREHOUSE_TEMPERATURE - MIN_WAREHOUSE_TEMPERATURE) + 1))

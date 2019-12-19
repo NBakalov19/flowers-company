@@ -7,6 +7,8 @@ import org.nbakalov.flowerscompany.validations.annotation.Validation;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.USERNAME_MAX_LENGTH;
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.USERNAME_MIN_LENGTH;
 import static org.nbakalov.flowerscompany.constants.UserConstants.*;
 
 @Validation

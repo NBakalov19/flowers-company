@@ -24,4 +24,7 @@ public final class GlobalConstants {
   public static final List<Integer> VALID_BUNCHES_PER_TRAY_COUNT = List.of(10, 15, 16, 17, 18, 20, 25);
 
   public static final List<Variety> VALID_VARIETIES = Variety.stream().collect(Collectors.toList());
+
+  public static final Integer USERNAME_MIN_LENGTH = 3;
+  public static final Integer USERNAME_MAX_LENGTH = 20;
 }

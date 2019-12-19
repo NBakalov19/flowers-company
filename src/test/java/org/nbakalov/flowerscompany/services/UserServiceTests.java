@@ -52,11 +52,6 @@ public class UserServiceTests {
   private static final String VALID_EDITED_EMAIL = "dj_abv@abv.bg";
 
   private static final String NEW_IMAGE_URL = "[random_url]";
-  private static final String NEW_IMAGE_ID = "[random_id]";
-
-  private static final String WRONG_OLD_PASSWORD = "[wrong_old_password]";
-
-  private static final String EXPECTED_REGISTER_LOG_MESSAGE = "was successfully created.";
 
   @InjectMocks
   UserServiceImpl userService;
@@ -185,7 +180,7 @@ public class UserServiceTests {
   public void loadByUsername_WhenNotExistUser_ShouldThrow() {
     String username = "Peter";
 
-    userService.findByUsername(username);
+    userService.loadUserByUsername(username);
   }
 
   @Test
@@ -225,22 +220,11 @@ public class UserServiceTests {
   @Test
   public void findAllUser_WhenNotHaveUsers_ShouldReturnEmptyList() {
 
-    List<UserServiceModel> allUsers = userService.findAllUsers();
+    List<User> allUsers = userRepository.findAll();
 
     assertEquals(0, allUsers.size());
   }
 
-  @Test
-  public void findAllUser_WhenHaveUsers_ShouldReturnUser() {
-
-    List<UserServiceModel> allUsers = new ArrayList<>();
-    allUsers.add(MODEL);
-
-    when(userService.findAllUsers()).thenReturn(allUsers);
-
-    assertEquals(1, allUsers.size());
-    assertEquals(VALID_USERNAME, allUsers.get(0).getUsername());
-  }
 
   @Test(expected = UsernameNotFoundException.class)
   public void editUserProfile_WhenUserNotExist() {

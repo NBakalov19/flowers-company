@@ -2,10 +2,7 @@ package org.nbakalov.flowerscompany.web.controllers.view;
 
 import org.nbakalov.flowerscompany.errors.BaseException;
 import org.nbakalov.flowerscompany.errors.WrongPasswordException;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalFlowersBatchServiceModelException;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalOrderServiceModelException;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalUserServiceModelException;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalWarehouseServiceModelException;
+import org.nbakalov.flowerscompany.errors.illegalservicemodels.*;
 import org.nbakalov.flowerscompany.errors.notfound.FlowersBatchNotFoundException;
 import org.nbakalov.flowerscompany.errors.notfound.OrderNotFoundException;
 import org.nbakalov.flowerscompany.errors.notfound.UserNotFoundException;
@@ -66,7 +63,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler({IllegalFlowersBatchServiceModelException.class,
           IllegalOrderServiceModelException.class,
           IllegalUserServiceModelException.class,
-          IllegalWarehouseServiceModelException.class})
+          IllegalWarehouseServiceModelException.class,
+          IllegalLogServiceModelException.class})
   public ModelAndView handleNotAcceptableExceptions(BaseException ex) {
     ex.printStackTrace();
 

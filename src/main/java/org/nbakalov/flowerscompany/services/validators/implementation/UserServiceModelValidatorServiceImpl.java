@@ -1,12 +1,16 @@
 package org.nbakalov.flowerscompany.services.validators.implementation;
 
+import lombok.NoArgsConstructor;
 import org.nbakalov.flowerscompany.services.models.UserServiceModel;
 import org.nbakalov.flowerscompany.services.validators.UserServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.USERNAME_MAX_LENGTH;
+import static org.nbakalov.flowerscompany.constants.GlobalConstants.USERNAME_MIN_LENGTH;
 import static org.nbakalov.flowerscompany.constants.UserConstants.*;
 
 @Service
+@NoArgsConstructor
 public class UserServiceModelValidatorServiceImpl implements UserServiceModelValidatorService {
 
   @Override

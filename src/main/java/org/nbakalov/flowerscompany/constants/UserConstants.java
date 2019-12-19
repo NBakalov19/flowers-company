@@ -18,9 +18,6 @@ public final class UserConstants {
 
   public static final String USER_WITH_EMAIL_ALLREADY_EXIST = "User with %s allready exist";
 
-  public static final Integer USERNAME_MIN_LENGTH = 3;
-  public static final Integer USERNAME_MAX_LENGTH = 20;
-
   public static final Integer PASSWORD_MIN_LENGTH = 6;
   public static final Integer PASSWORD_MAX_LENGTH = 15;
 

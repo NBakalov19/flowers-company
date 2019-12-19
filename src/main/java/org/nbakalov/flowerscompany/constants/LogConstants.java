@@ -29,4 +29,10 @@ public final class LogConstants {
   public static final String EDITED_ORDER = "edit order.";
   public static final String DELETE_ORDER = "delete order.";
   public static final String REVIEW_ORDER = "process order.";
+
+  //Validator
+  public static final Integer DESCRIPTION_MIN_LENGTH = 5;
+  public static final Integer DESCRIPTION_MAX_LENGTH = 150;
+
+  public static final String LOG_BAD_CREDENTIAL = "Log not created. Bad credentials.";
 }
