@@ -13,7 +13,6 @@ import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.services.implementations.RoleServiceImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -87,7 +86,6 @@ public class RoleServiceTest {
     int actual = fakeRepository.size();
     assertEquals(expected, actual);
   }
-
 
 
   @Test

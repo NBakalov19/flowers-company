@@ -29,10 +29,6 @@ public class LogServiceImpl implements LogService {
   @Override
   public LogServiceModel saveLog(LogServiceModel model) {
 
-    if (!validatorService.isValid(model)) {
-      throw new IllegalLogServiceModelException(LOG_BAD_CREDENTIAL);
-    }
-
     Log log = modelMapper.map(model, Log.class);
     logRepository.saveAndFlush(log);
 
