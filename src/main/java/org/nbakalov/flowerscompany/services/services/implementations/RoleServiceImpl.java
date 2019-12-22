@@ -8,6 +8,7 @@ import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.services.RoleService;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,8 +22,10 @@ public class RoleServiceImpl implements RoleService {
   private final ModelMapper modelMapper;
 
   @Override
-  public RoleServiceModel findByAuthority(String authority) {
-    return modelMapper.map(roleRepository.findByAuthority(authority), RoleServiceModel.class);
+  public RoleServiceModel findByAuthority(String authority) throws RoleNotFoundException {
+    return roleRepository.findByAuthority(authority)
+            .map(role -> modelMapper.map(role, RoleServiceModel.class))
+            .orElseThrow(() -> new RoleNotFoundException("Role not found."));
   }
 
   @Override

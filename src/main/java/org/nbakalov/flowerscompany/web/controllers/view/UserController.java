@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.management.relation.RoleNotFoundException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -61,7 +62,7 @@ public class UserController extends BaseController {
   @PreAuthorize("isAnonymous()")
   public ModelAndView registerConfirm(ModelAndView modelAndView,
                                       @ModelAttribute UserCreateModel createModel,
-                                      BindingResult bindingResult) throws IOException {
+                                      BindingResult bindingResult) throws IOException, RoleNotFoundException {
 
     userCreateValidation.validate(createModel, bindingResult);
 
@@ -167,7 +168,7 @@ public class UserController extends BaseController {
 
   @PostMapping("/set-operator/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView setModerator(@PathVariable String id) {
+  public ModelAndView setModerator(@PathVariable String id) throws RoleNotFoundException {
     userService.setUserRole(id, "operator");
 
     return redirect("/users/all");
@@ -175,7 +176,7 @@ public class UserController extends BaseController {
 
   @PostMapping("/set-admin/{id}")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView setAdmin(@PathVariable String id) {
+  public ModelAndView setAdmin(@PathVariable String id) throws RoleNotFoundException {
     userService.setUserRole(id, "admin");
 
     return redirect("/users/all");

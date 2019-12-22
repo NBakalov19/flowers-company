@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
   private final LogService logService;
 
   @Override
-  public UserServiceModel registerUser(UserServiceModel userServiceModel) {
+  public UserServiceModel registerUser(UserServiceModel userServiceModel) throws RoleNotFoundException {
 
     if (!validatorService.isValid(userServiceModel)) {
       throw new IllegalUserServiceModelException(USER_BAD_CREDENTIALS);
@@ -121,7 +122,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserServiceModel setUserRole(String id, String role) {
+  public UserServiceModel setUserRole(String id, String role) throws RoleNotFoundException {
 
     User user = userRepository.findById(id)
             .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -152,7 +153,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username){
+  public UserDetails loadUserByUsername(String username) {
     return userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
   }

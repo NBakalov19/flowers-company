@@ -27,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -76,7 +77,7 @@ public class UserServiceTests {
 
 
   @Before
-  public void init() {
+  public void init() throws RoleNotFoundException {
 
     UserServiceModelValidatorServiceImpl actualUserValidation = new UserServiceModelValidatorServiceImpl();
     ModelMapper actualMapper = new ModelMapper();
@@ -119,7 +120,7 @@ public class UserServiceTests {
   }
 
   @Test(expected = IllegalUserServiceModelException.class)
-  public void registerUser_WhenNotValid_ShouldThrow() {
+  public void registerUser_WhenNotValid_ShouldThrow() throws RoleNotFoundException {
 
     Mockito.when(validatorService.isValid(MODEL))
             .thenReturn(false);
@@ -128,7 +129,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void registerUser_WhenFirstValidUserIsAdded_ShouldWork() {
+  public void registerUser_WhenFirstValidUserIsAdded_ShouldWork() throws RoleNotFoundException {
 
     when(userRepository.count()).thenReturn(0L);
     when(validatorService.isValid(MODEL)).thenReturn(true);
@@ -141,7 +142,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void registerUser_WhenNotFirstValidUserIsAdded_ShouldWork() {
+  public void registerUser_WhenNotFirstValidUserIsAdded_ShouldWork() throws RoleNotFoundException {
 
     String authority = "ROLE_CUSTOMER";
     RoleServiceModel mockRole = new RoleServiceModel() {{
@@ -194,7 +195,7 @@ public class UserServiceTests {
   }
 
   @Test(expected = IllegalUserServiceModelException.class)
-  public void registerUser_WhenModelIsNotValid_ShouldThrow() {
+  public void registerUser_WhenModelIsNotValid_ShouldThrow() throws RoleNotFoundException {
 
     when(validatorService.isValid(MODEL)).thenReturn(false);
 
@@ -202,7 +203,7 @@ public class UserServiceTests {
   }
 
   @Test(expected = UserAllreadyExistException.class)
-  public void registerUser_WhenUserIsExist_ShouldThrow() {
+  public void registerUser_WhenUserIsExist_ShouldThrow() throws RoleNotFoundException {
 
     when(userRepository.findByUsername(USER.getUsername())).thenReturn(Optional.of(USER));
 
@@ -210,7 +211,7 @@ public class UserServiceTests {
   }
 
   @Test(expected = UserWithThisEmailAllreadyExist.class)
-  public void registerUser_WhenEmailIsExist_ShouldThrow() {
+  public void registerUser_WhenEmailIsExist_ShouldThrow() throws RoleNotFoundException {
 
     when(userRepository.findByEmail(USER.getEmail())).thenReturn(Optional.of(USER));
 
@@ -241,7 +242,7 @@ public class UserServiceTests {
   }
 
   @Test(expected = UserNotFoundException.class)
-  public void setUserRole_WhenUserWithIdNotExist_ShouldThrow() {
+  public void setUserRole_WhenUserWithIdNotExist_ShouldThrow() throws RoleNotFoundException {
 
     String invalidId = "id1";
     String role = "operator";
@@ -250,7 +251,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void setUserRole_WhenUserIsPromotedToOperator_ShouldHaveRoleOperator() {
+  public void setUserRole_WhenUserIsPromotedToOperator_ShouldHaveRoleOperator() throws RoleNotFoundException {
 
     Set<Role> auth = Set.of(new Role("ROLE_CUSTOMER"));
     String role = "operator";
@@ -267,7 +268,7 @@ public class UserServiceTests {
   }
 
   @Test
-  public void setUserRole_WhenUserIsPromotedToAdmin_ShouldHaveRolesAndAdmin() {
+  public void setUserRole_WhenUserIsPromotedToAdmin_ShouldHaveRolesAndAdmin() throws RoleNotFoundException {
 
     Set<Role> auth = Set.of(new Role("ROLE_CUSTOMER"));
     String role = "admin";
