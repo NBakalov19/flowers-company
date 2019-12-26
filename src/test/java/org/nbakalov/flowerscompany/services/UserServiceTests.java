@@ -50,9 +50,9 @@ public class UserServiceTests {
   private static final String VALID_EDITED_PASSWORD = "1234567";
   private static final String VALID_EMAIL = "dj_as@abv.bg";
   private static final String VALID_ID = "id";
+  private static final String IMAGE_URL = "[random_url]";
   private static final String VALID_EDITED_EMAIL = "dj_abv@abv.bg";
 
-  private static final String NEW_IMAGE_URL = "[random_url]";
 
   @InjectMocks
   UserServiceImpl userService;
@@ -111,7 +111,7 @@ public class UserServiceTests {
     USER.setUsername(VALID_USERNAME);
     USER.setPassword(VALID_PASSWORD);
     USER.setEmail(VALID_EMAIL);
-    USER.setProfilePictureUrl(NEW_IMAGE_URL);
+    USER.setProfilePictureUrl(IMAGE_URL);
 
     MODEL.setUsername(VALID_USERNAME);
     MODEL.setPassword(VALID_PASSWORD);
@@ -221,7 +221,7 @@ public class UserServiceTests {
   @Test
   public void findAllUser_WhenNotHaveUsers_ShouldReturnEmptyList() {
 
-    List<User> allUsers = userRepository.findAll();
+    List<UserServiceModel> allUsers = userService.findAllUsers();
 
     assertEquals(0, allUsers.size());
   }
@@ -239,6 +239,21 @@ public class UserServiceTests {
     when(userRepository.findByUsername(VALID_USERNAME)).thenReturn(Optional.of(USER));
 
     userService.editUserProfile(MODEL, VALID_EDITED_PASSWORD);
+  }
+
+
+  @Test
+  public void editUserProfileEditUserSuccessfully_WhenInputIsCorrect() {
+
+    when(userRepository.findByUsername(VALID_USERNAME)).thenReturn(Optional.of(USER));
+    when(encoder.matches(VALID_PASSWORD,VALID_PASSWORD)).thenReturn(true);
+    when(validatorService.isValid(MODEL)).thenReturn(true);
+
+    MODEL.setEmail(VALID_EDITED_EMAIL);
+
+    UserServiceModel result = userService.editUserProfile(MODEL, VALID_PASSWORD);
+
+    assertEquals(VALID_EDITED_EMAIL, result.getEmail());
   }
 
   @Test(expected = UserNotFoundException.class)

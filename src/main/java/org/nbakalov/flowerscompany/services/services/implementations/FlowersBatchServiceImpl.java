@@ -18,7 +18,6 @@ import org.nbakalov.flowerscompany.services.services.WarehouseService;
 import org.nbakalov.flowerscompany.services.validators.FlowersBatchServiceModelValidatorService;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,10 +65,11 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
                                                   FlowersBatchServiceModel updateModel,
                                                   String currentUser) {
 
-    FlowersBatchServiceModel serviceModel =
-            flowersBatchRepository.findById(id)
-                    .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-                    .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
+    if (!validatorService.isValid(updateModel)) {
+      throw new IllegalFlowersBatchServiceModelException(FLOWERS_BATCH_BAD_CREDENTIALS);
+    }
+
+    FlowersBatchServiceModel serviceModel = findBatchById(id);
 
     hasRoomInWarehouse(serviceModel.getWarehouse(), updateModel);
 
@@ -79,8 +79,9 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     serviceModel.setTrays(updateModel.getTrays());
     serviceModel.setBunchesPerTray(updateModel.getBunchesPerTray());
 
-    FlowersBatch flowersBatch = flowersBatchRepository.saveAndFlush(
-            modelMapper.map(serviceModel, FlowersBatch.class));
+    FlowersBatch flowersBatch = modelMapper.map(serviceModel, FlowersBatch.class);
+
+    flowersBatchRepository.saveAndFlush(flowersBatch);
 
     LogServiceModel log = createLog(currentUser, EDITED_FLOWERS_BATCH);
     logService.saveLog(log);
@@ -93,7 +94,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
 
     return flowersBatchRepository.findById(id)
             .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .orElseThrow(() -> new NoResultException(FLOWERS_BATCH_NOT_FOUND));
+            .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
   }
 
 
@@ -126,9 +127,7 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   @Override
   public void moveBatch(String id, MoveBatchModel model, String currentUser) {
 
-    FlowersBatchServiceModel flowersBatchServiceModel = flowersBatchRepository.findById(id)
-            .map(flowersBatch -> modelMapper.map(flowersBatch, FlowersBatchServiceModel.class))
-            .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
+    FlowersBatchServiceModel flowersBatchServiceModel = findBatchById(id);
 
     WarehouseServiceModel oldWarehouse =
             warehouseService.findWarehouseById(flowersBatchServiceModel.getWarehouse().getId());
@@ -169,8 +168,8 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
     logService.saveLog(log);
   }
 
-  private void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,
-                                  FlowersBatchServiceModel flowersBatchServiceModel) {
+  public void hasRoomInWarehouse(WarehouseServiceModel warehouseServiceModel,
+                                 FlowersBatchServiceModel flowersBatchServiceModel) {
 
     int currCapacity = warehouseServiceModel.getCurrCapacity();
 

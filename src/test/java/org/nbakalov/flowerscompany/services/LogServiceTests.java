@@ -65,9 +65,9 @@ public class LogServiceTests {
             .thenAnswer(invocationOnMock ->
                     actualMapper.map(invocationOnMock.getArguments()[0], LogServiceModel.class));
 
-    when(validatorService.isValid(any()))
-            .thenAnswer(invocationOnMock ->
-                    modelValidator.isValid((LogServiceModel) invocationOnMock.getArguments()[0]));
+//    when(validatorService.isValid(any()))
+//            .thenAnswer(invocationOnMock ->
+//                    modelValidator.isValid((LogServiceModel) invocationOnMock.getArguments()[0]));
 
     LOG.setCreatedOn(VALID_DATE_TIME);
     LOG.setUsername(VALID_USER);
@@ -78,19 +78,10 @@ public class LogServiceTests {
     MODEL.setDescription(VALID_DESCRIPTION);
   }
 
-  @Test(expected = IllegalLogServiceModelException.class)
-  public void saveLog_ShouldThrowWhenNotValid() {
-
-    when(validatorService.isValid(MODEL))
-            .thenReturn(false);
-
-    logService.saveLog(MODEL);
-  }
 
   @Test
   public void saveLog_WhenInputIsValid_ShouldWorkCorrect() {
 
-    when(validatorService.isValid(MODEL)).thenReturn(true);
     when(logRepository.saveAndFlush(any(Log.class))).thenReturn(LOG);
 
     LogServiceModel result = logService.saveLog(MODEL);

@@ -17,7 +17,7 @@ public class OrderServiceModel extends BaseServiceModel {
   private Variety variety;
   private Integer quantity;
   private Integer bunchesPerTray;
-  private LocalDateTime orderDate;
+  private LocalDateTime orderDateTime;
   private LocalDateTime finishedOn;
   private Status status;
 }

@@ -13,6 +13,7 @@ import org.nbakalov.flowerscompany.services.models.RoleServiceModel;
 import org.nbakalov.flowerscompany.services.services.implementations.RoleServiceImpl;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class RoleServiceTest {
   private static final String ROLE_ADMIN = "ROLE_ADMIN";
   private static final String ROLE_OPERATOR = "ROLE_OPERATOR";
   private static final String ROLE_CUSTOMER = "ROLE_CUSTOMER";
+  private static final Role TEST_ROLE = new Role(ROLE_CUSTOMER);
 
   private static List<Role> fakeRepository;
 
@@ -117,5 +119,23 @@ public class RoleServiceTest {
     int expected = allRoles.size();
     int actual = allFoundRoleServiceModels.size();
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void findRoleByAuthorityReturnRole_whenRoleExist() throws RoleNotFoundException {
+
+    when(roleRepository.findByAuthority(ROLE_CUSTOMER)).thenReturn(Optional.of(TEST_ROLE));
+
+    RoleServiceModel result = roleService.findByAuthority(ROLE_CUSTOMER);
+
+    assertEquals(ROLE_CUSTOMER, result.getAuthority());
+  }
+
+  @Test(expected = RoleNotFoundException.class)
+  public void findRoleByAuthorityThrow_whenRoleNotExist() throws RoleNotFoundException {
+
+    when(roleRepository.findByAuthority(ROLE_CUSTOMER)).thenReturn(Optional.empty());
+
+    roleService.findByAuthority(ROLE_CUSTOMER);
   }
 }

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.nbakalov.flowerscompany.data.models.entities.Log;
 import org.nbakalov.flowerscompany.data.repositories.LogRepository;
-import org.nbakalov.flowerscompany.errors.illegalservicemodels.IllegalLogServiceModelException;
 import org.nbakalov.flowerscompany.services.models.LogServiceModel;
 import org.nbakalov.flowerscompany.services.services.LogService;
 import org.nbakalov.flowerscompany.services.validators.LogServiceModelValidatorService;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
 
 import static org.nbakalov.flowerscompany.constants.GlobalConstants.BEGIN_OF_DAY;
 import static org.nbakalov.flowerscompany.constants.GlobalConstants.END_OF_DAY;
-import static org.nbakalov.flowerscompany.constants.LogConstants.LOG_BAD_CREDENTIAL;
 
 @Service
 @AllArgsConstructor

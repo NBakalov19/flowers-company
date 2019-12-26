@@ -78,22 +78,26 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserServiceModel editUserProfile(UserServiceModel userServiceModel, String oldPassword) {
+  public UserServiceModel editUserProfile(UserServiceModel serviceModel, String oldPassword) {
 
-    User user = userRepository.findByUsername(userServiceModel.getUsername())
+    User user = userRepository.findByUsername(serviceModel.getUsername())
             .orElseThrow(() -> new UsernameNotFoundException(USER_NOT_FOUND));
 
     if (!bCryptPasswordEncoder.matches(oldPassword, user.getPassword())) {
       throw new WrongPasswordException(PASSWORDS_NOT_MATCH);
     }
 
-    user.setPassword(userServiceModel.getPassword() != null
-            ? bCryptPasswordEncoder.encode(userServiceModel.getPassword())
+    user.setPassword(serviceModel.getPassword() != null
+            ? bCryptPasswordEncoder.encode(serviceModel.getPassword())
             : user.getPassword());
 
-    user.setEmail(userServiceModel.getEmail());
+    if (userRepository.findByEmail(serviceModel.getEmail()).isPresent()) {
+      throw new UserWithThisEmailAllreadyExist(USER_WITH_EMAIL_ALLREADY_EXIST);
+    }
 
-    if (!validatorService.isValid(userServiceModel)) {
+    user.setEmail(serviceModel.getEmail());
+
+    if (!validatorService.isValid(serviceModel)) {
       throw new IllegalUserServiceModelException(USER_BAD_CREDENTIALS);
     }
 

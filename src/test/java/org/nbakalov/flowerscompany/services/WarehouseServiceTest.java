@@ -129,10 +129,10 @@ public class WarehouseServiceTest {
   @Test
   public void findAllWarehouse_WhenHaveWarehouseInRepo_ShouldReturnAll() {
 
-    List<Warehouse> warehouses = new ArrayList<>();
-    warehouses.add(WAREHOUSE);
+    List<WarehouseServiceModel> warehouses = new ArrayList<>();
+    warehouses.add(MODEL);
 
-   lenient().when(warehouseRepository.findAll()).thenReturn(warehouses);
+    lenient().when(warehouseService.findAllWarehouses()).thenReturn(warehouses);
 
     assertEquals(1, warehouses.size());
     assertEquals(VALID_NAME, warehouses.get(0).getName());
@@ -191,7 +191,7 @@ public class WarehouseServiceTest {
 
     MODEL.getBatches().add(flowersBatch);
 
-    when(warehouseService.updateCurrCapacity(MODEL)).thenReturn(MODEL);
+    lenient().when(warehouseService.updateCurrCapacity(MODEL)).thenReturn(MODEL);
 
     WarehouseServiceModel result = warehouseService.updateCurrCapacity(MODEL);
 
@@ -203,8 +203,6 @@ public class WarehouseServiceTest {
 
     when(warehouseRepository.findById(ID)).thenReturn(Optional.of(WAREHOUSE));
     when(warehouseService.findWarehouseById(ID)).thenReturn(MODEL);
-    when(warehouseRepository.saveAndFlush(any(Warehouse.class))).thenReturn(WAREHOUSE);
-    when(warehouseService.editWarehouse(ID, MODEL, VALID_NAME)).thenReturn(MODEL);
 
     MODEL.setName("North");
     MODEL.setMaxCapacity(15000);

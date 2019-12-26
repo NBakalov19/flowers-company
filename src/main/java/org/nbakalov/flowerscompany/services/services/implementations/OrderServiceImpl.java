@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     UserServiceModel customer = userService.findByUsername(customerName);
 
     serviceModel.setCustomer(customer);
-    serviceModel.setOrderDate(TODAY);
+    serviceModel.setOrderDateTime(TODAY);
     serviceModel.setStatus(Status.INPROGRESS);
 
     Order order = modelMapper.map(serviceModel, Order.class);
@@ -76,6 +76,7 @@ public class OrderServiceImpl implements OrderService {
     orderRepository.saveAndFlush(order);
 
     LogServiceModel log = createLog(order.getCustomer().getUsername(), EDITED_ORDER);
+    logService.saveLog(log);
 
     return modelMapper.map(order, OrderServiceModel.class);
   }
@@ -117,6 +118,7 @@ public class OrderServiceImpl implements OrderService {
     orderRepository.delete(order);
 
     LogServiceModel log = createLog(order.getCustomer().getUsername(), DELETE_ORDER);
+    logService.saveLog(log);
   }
 
   @Override
@@ -137,8 +139,6 @@ public class OrderServiceImpl implements OrderService {
 
       processOrder(order, batches, currentUser);
     }
-
-
   }
 
   private void deniesOrder(OrderServiceModel order, String currentUser) {
