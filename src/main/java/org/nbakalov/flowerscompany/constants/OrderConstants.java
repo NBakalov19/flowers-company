@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 
 public final class OrderConstants {
 
+  private OrderConstants() {
+  }
+
   public static final Integer ORDER_MIN_QUANTITY = 1;
 
-  public final static LocalDateTime TODAY = LocalDateTime.now();
+  public static final LocalDateTime TODAY = LocalDateTime.now();
 
   public static final String ORDER_NOT_FOUND = "Order not found.";
 

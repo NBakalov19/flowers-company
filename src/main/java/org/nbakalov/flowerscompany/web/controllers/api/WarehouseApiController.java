@@ -20,7 +20,6 @@ public class WarehouseApiController {
   private final WarehouseService warehouseService;
   private final ModelMapper modelMapper;
 
-
   @GetMapping("/all")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   public List<AllWarehouseApiModel> findAllWarehouses() {

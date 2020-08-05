@@ -21,7 +21,6 @@ public class FlowerBatchApiController {
   private final FlowersBatchService flowersBatchService;
   private final ModelMapper modelMapper;
 
-
   @GetMapping("/todays-batches")
   @PreAuthorize("hasRole('ROLE_OPERATOR')")
   public List<TodayFlowersBatchApiModel> findTodaysBatches() {
@@ -30,6 +29,5 @@ public class FlowerBatchApiController {
             .stream()
             .map(fb -> modelMapper.map(fb, TodayFlowersBatchApiModel.class))
             .collect(Collectors.toList());
-
   }
 }

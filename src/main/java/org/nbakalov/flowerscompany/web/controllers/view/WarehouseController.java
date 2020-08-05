@@ -30,170 +30,172 @@ import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 @AllArgsConstructor
 public class WarehouseController extends BaseController {
 
-  private final WarehouseService warehouseService;
-  private final WarehouseCreateValidation warehouseCreateValidation;
-  private final WarehouseUpdateValidation warehouseUpdateValidation;
-  private final ModelMapper modelMapper;
+    private static final String WAREHOUSE_ATTRIBUTE = "warehouse";
 
-  @GetMapping("/create-warehouse")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PageTitle(CREATE_WAREHOUSE)
-  public ModelAndView createWarehouse(ModelAndView modelAndView,
-                                      @ModelAttribute WarehouseCreateModel createModel) {
+    private final WarehouseService warehouseService;
+    private final WarehouseCreateValidation warehouseCreateValidation;
+    private final WarehouseUpdateValidation warehouseUpdateValidation;
+    private final ModelMapper modelMapper;
 
-    modelAndView.addObject("warehouse", createModel);
+    @GetMapping("/create-warehouse")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle(CREATE_WAREHOUSE)
+    public ModelAndView createWarehouse(ModelAndView modelAndView,
+                                        @ModelAttribute WarehouseCreateModel createModel) {
 
-    return view("/warehouses/create-warehouse", modelAndView);
-  }
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, createModel);
 
-  @PostMapping("/create-warehouse")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView createWarehouseConfirm(ModelAndView modelAndView,
-                                             @ModelAttribute WarehouseCreateModel createModel,
-                                             BindingResult bindingResult,
-                                             Principal principal) {
-
-    warehouseCreateValidation.validate(createModel, bindingResult);
-
-    if (bindingResult.hasErrors()) {
-      createModel.setName(null);
-      createModel.setMaxCapacity(null);
-
-      modelAndView.addObject("warehouse", createModel);
-
-      return view("/warehouses/create-warehouse", modelAndView);
+        return view("/warehouses/create-warehouse", modelAndView);
     }
 
-    WarehouseServiceModel serviceModel = modelMapper.map(createModel, WarehouseServiceModel.class);
+    @PostMapping("/create-warehouse")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView createWarehouseConfirm(ModelAndView modelAndView,
+                                               @ModelAttribute WarehouseCreateModel createModel,
+                                               BindingResult bindingResult,
+                                               Principal principal) {
 
-    warehouseService.createWarehouse(serviceModel, principal.getName());
+        warehouseCreateValidation.validate(createModel, bindingResult);
 
-    return redirect("/warehouses/all");
-  }
+        if (bindingResult.hasErrors()) {
+            createModel.setName(null);
+            createModel.setMaxCapacity(null);
 
-  @GetMapping("/all")
-  @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  @PageTitle(ALL_WAREHOUSES)
-  public ModelAndView allWarehouses(ModelAndView modelAndView) {
+            modelAndView.addObject(WAREHOUSE_ATTRIBUTE, createModel);
 
-    Long warehousesCount = warehouseService.getWarehousesCount();
-    modelAndView.addObject("warehousesCount", warehousesCount);
+            return view("/warehouses/create-warehouse", modelAndView);
+        }
 
-    List<AllWarehousesViewModel> allWarehouses = warehouseService.findAllWarehouses()
-            .stream()
-            .map(warehouseServiceModel ->
-                    modelMapper.map(warehouseServiceModel, AllWarehousesViewModel.class))
-            .collect(Collectors.toList());
+        WarehouseServiceModel serviceModel = modelMapper.map(createModel, WarehouseServiceModel.class);
 
-    modelAndView.addObject("warehouses", allWarehouses);
+        warehouseService.createWarehouse(serviceModel, principal.getName());
 
-    return view("warehouses/all-warehouses", modelAndView);
-  }
-
-  @GetMapping("/details/{id}")
-  @PreAuthorize("hasRole('ROLE_OPERATOR')")
-  @PageTitle(DETAILS_WAREHOUSE)
-  public ModelAndView warehouseDetails(@PathVariable String id, ModelAndView modelAndView) {
-
-    WarehouseServiceModel warehouseServiceModel =
-            warehouseService.findWarehouseById(id);
-
-    WarehouseDetailsViewModel detailsViewModel =
-            modelMapper.map(warehouseServiceModel, WarehouseDetailsViewModel.class);
-
-    warehouseService.updateCurrCapacity(warehouseServiceModel);
-
-    Long warehousesCount = warehouseService.getWarehousesCount();
-
-    modelAndView.addObject("warehouse", detailsViewModel);
-    modelAndView.addObject("warehousesCount", warehousesCount);
-
-    return view("warehouses/warehouse-details", modelAndView);
-  }
-
-  @GetMapping("/edit/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PageTitle(EDIT_WAREHOUSE)
-  public ModelAndView editWarehouse(@PathVariable String id,
-                                    ModelAndView modelAndView) {
-
-    WarehouseServiceModel warehouseServiceModel =
-            warehouseService.findWarehouseById(id);
-
-    WarehouseUpdateViewModel updateViewModel =
-            modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
-
-    modelAndView.addObject("warehouse", updateViewModel);
-
-    return view("/warehouses/edit-warehouse", modelAndView);
-  }
-
-  @PostMapping("/edit/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView editWarehouseConfirm(@PathVariable String id, ModelAndView modelAndView,
-                                           @ModelAttribute WarehouseUpdateModel updateModel,
-                                           Principal principal, BindingResult bindingResult) {
-
-    warehouseUpdateValidation.validate(updateModel, bindingResult);
-
-    if (bindingResult.hasErrors()) {
-      updateModel = modelMapper.map(warehouseService.findWarehouseById(id), WarehouseUpdateModel.class);
-
-      modelAndView.addObject("warehouse", updateModel);
-
-      return view("/warehouses/edit-warehouse", modelAndView);
+        return redirect("/warehouses/all");
     }
 
-    WarehouseServiceModel serviceModel =
-            modelMapper.map(updateModel, WarehouseServiceModel.class);
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_OPERATOR')")
+    @PageTitle(ALL_WAREHOUSES)
+    public ModelAndView allWarehouses(ModelAndView modelAndView) {
 
-    warehouseService.editWarehouse(id, serviceModel, principal.getName());
+        Long warehousesCount = warehouseService.getWarehousesCount();
+        modelAndView.addObject("warehousesCount", warehousesCount);
 
-    return redirect("/warehouses/details/" + id);
-  }
+        List<AllWarehousesViewModel> allWarehouses = warehouseService.findAllWarehouses()
+                .stream()
+                .map(warehouseServiceModel ->
+                        modelMapper.map(warehouseServiceModel, AllWarehousesViewModel.class))
+                .collect(Collectors.toList());
 
-  @GetMapping("/delete/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PageTitle(DELETE_WAREHOUSE)
-  public ModelAndView deleteWarehouse(@PathVariable String id, ModelAndView modelAndView) {
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, allWarehouses);
 
-    WarehouseServiceModel warehouseServiceModel =
-            warehouseService.findWarehouseById(id);
+        return view("warehouses/all-warehouses", modelAndView);
+    }
 
-    WarehouseUpdateViewModel warehouseUpdateViewModel =
-            modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
+    @GetMapping("/details/{id}")
+    @PreAuthorize("hasRole('ROLE_OPERATOR')")
+    @PageTitle(DETAILS_WAREHOUSE)
+    public ModelAndView warehouseDetails(@PathVariable String id, ModelAndView modelAndView) {
 
-    modelAndView.addObject("warehouse", warehouseUpdateViewModel);
+        WarehouseServiceModel warehouseServiceModel =
+                warehouseService.findWarehouseById(id);
 
-    return view("warehouses/delete-warehouse", modelAndView);
-  }
+        WarehouseDetailsViewModel detailsViewModel =
+                modelMapper.map(warehouseServiceModel, WarehouseDetailsViewModel.class);
 
-  @PostMapping("/delete/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView deleteWarehouseConfirm(@PathVariable String id,
-                                             @ModelAttribute WarehouseUpdateModel warehouseUpdateModel,
-                                             Principal principal) {
+        warehouseService.updateCurrCapacity(warehouseServiceModel);
 
-    warehouseService.deleteWarehouse(id, principal.getName());
+        Long warehousesCount = warehouseService.getWarehousesCount();
 
-    return redirect("/warehouses/all");
-  }
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, detailsViewModel);
+        modelAndView.addObject("warehousesCount", warehousesCount);
 
-  @PostMapping("/empty-warehouse/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView emptyWarehouse(@PathVariable String id,
-                                     ModelAndView modelAndView, Principal principal) {
+        return view("warehouses/warehouse-details", modelAndView);
+    }
 
-    warehouseService.emptyWarehouse(id, principal.getName());
+    @GetMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle(EDIT_WAREHOUSE)
+    public ModelAndView editWarehouse(@PathVariable String id,
+                                      ModelAndView modelAndView) {
 
-    WarehouseServiceModel warehouseServiceModel =
-            warehouseService.findWarehouseById(id);
+        WarehouseServiceModel warehouseServiceModel =
+                warehouseService.findWarehouseById(id);
 
-    WarehouseUpdateViewModel warehouseUpdateViewModel =
-            modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
+        WarehouseUpdateViewModel updateViewModel =
+                modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
 
-    modelAndView.addObject("warehouse", warehouseUpdateViewModel);
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, updateViewModel);
 
-    return redirect("/warehouses/delete/" + id);
-  }
+        return view("/warehouses/edit-warehouse", modelAndView);
+    }
+
+    @PostMapping("/edit/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView editWarehouseConfirm(@PathVariable String id, ModelAndView modelAndView,
+                                             @ModelAttribute WarehouseUpdateModel updateModel,
+                                             Principal principal, BindingResult bindingResult) {
+
+        warehouseUpdateValidation.validate(updateModel, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            updateModel = modelMapper.map(warehouseService.findWarehouseById(id), WarehouseUpdateModel.class);
+
+            modelAndView.addObject(WAREHOUSE_ATTRIBUTE, updateModel);
+
+            return view("/warehouses/edit-warehouse", modelAndView);
+        }
+
+        WarehouseServiceModel serviceModel =
+                modelMapper.map(updateModel, WarehouseServiceModel.class);
+
+        warehouseService.editWarehouse(id, serviceModel, principal.getName());
+
+        return redirect("/warehouses/details/" + id);
+    }
+
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle(DELETE_WAREHOUSE)
+    public ModelAndView deleteWarehouse(@PathVariable String id, ModelAndView modelAndView) {
+
+        WarehouseServiceModel warehouseServiceModel =
+                warehouseService.findWarehouseById(id);
+
+        WarehouseUpdateViewModel warehouseUpdateViewModel =
+                modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
+
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, warehouseUpdateViewModel);
+
+        return view("warehouses/delete-warehouse", modelAndView);
+    }
+
+    @PostMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView deleteWarehouseConfirm(@PathVariable String id,
+                                               @ModelAttribute WarehouseUpdateModel warehouseUpdateModel,
+                                               Principal principal) {
+
+        warehouseService.deleteWarehouse(id, principal.getName());
+
+        return redirect("/warehouses/all");
+    }
+
+    @PostMapping("/empty-warehouse/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView emptyWarehouse(@PathVariable String id,
+                                       ModelAndView modelAndView, Principal principal) {
+
+        warehouseService.emptyWarehouse(id, principal.getName());
+
+        WarehouseServiceModel warehouseServiceModel =
+                warehouseService.findWarehouseById(id);
+
+        WarehouseUpdateViewModel warehouseUpdateViewModel =
+                modelMapper.map(warehouseServiceModel, WarehouseUpdateViewModel.class);
+
+        modelAndView.addObject(WAREHOUSE_ATTRIBUTE, warehouseUpdateViewModel);
+
+        return redirect("/warehouses/delete/" + id);
+    }
 }

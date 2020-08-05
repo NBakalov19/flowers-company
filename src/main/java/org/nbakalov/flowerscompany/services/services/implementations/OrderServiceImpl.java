@@ -180,14 +180,14 @@ public class OrderServiceImpl implements OrderService {
           if (orderQuantity > currBatchTrays) {
             flowersBatchService.deleteBatch(batch.getId(), currentUser);
             orderQuantity -= currBatchTrays;
-          } else if (orderQuantity < currBatchTrays) {
-            int leftTrays = currBatchTrays - orderQuantity;
-            batch.setTrays(leftTrays);
-            flowersBatchService.editFlowerBatch(batch.getId(), batch, currentUser);
-            approveOrder(order, currentUser);
-            break;
           } else {
-            flowersBatchService.deleteBatch(batch.getId(), currentUser);
+            if (orderQuantity < currBatchTrays) {
+              int leftTrays = currBatchTrays - orderQuantity;
+              batch.setTrays(leftTrays);
+              flowersBatchService.editFlowerBatch(batch.getId(), batch, currentUser);
+            } else {
+              flowersBatchService.deleteBatch(batch.getId(), currentUser);
+            }
             approveOrder(order, currentUser);
             break;
           }

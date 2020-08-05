@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class BaseException extends RuntimeException {
 
-  private int status;
+  private final int status;
 
   public BaseException(String message, int status) {
     super(message);

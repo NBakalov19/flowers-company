@@ -34,151 +34,150 @@ import static org.nbakalov.flowerscompany.constants.PageTitleConstants.*;
 @AllArgsConstructor
 public class UserController extends BaseController {
 
-  private final UserService userService;
-  private final UserCreateValidation userCreateValidation;
-  private final UserUpdateValidation userUpdateValidation;
-  private final CloudinaryService cloudinaryService;
-  private final ModelMapper modelMapper;
+    private final UserService userService;
+    private final UserCreateValidation userCreateValidation;
+    private final UserUpdateValidation userUpdateValidation;
+    private final CloudinaryService cloudinaryService;
+    private final ModelMapper modelMapper;
 
-  @GetMapping("/login")
-  @PreAuthorize("isAnonymous()")
-  @PageTitle(LOGIN)
-  public ModelAndView login() {
-    return view("/users/login");
-  }
-
-  @GetMapping("/register")
-  @PreAuthorize("isAnonymous()")
-  @PageTitle(REGISTER)
-  public ModelAndView register(ModelAndView modelAndView,
-                               @ModelAttribute UserCreateModel createModel) {
-
-    modelAndView.addObject("user", createModel);
-
-    return view("/users/register", modelAndView);
-  }
-
-  @PostMapping("/register")
-  @PreAuthorize("isAnonymous()")
-  public ModelAndView registerConfirm(ModelAndView modelAndView,
-                                      @ModelAttribute UserCreateModel createModel,
-                                      BindingResult bindingResult) throws IOException, RoleNotFoundException {
-
-    userCreateValidation.validate(createModel, bindingResult);
-
-    if (bindingResult.hasErrors()) {
-      createModel.setPassword(null);
-      createModel.setConfirmPassword(null);
-      modelAndView.addObject("user", createModel);
-
-      return view("/users/register", modelAndView);
+    @GetMapping("/login")
+    @PreAuthorize("isAnonymous()")
+    @PageTitle(LOGIN)
+    public ModelAndView login() {
+        return view("/users/login");
     }
 
-    UserServiceModel serviceModel =
-            modelMapper.map(createModel, UserServiceModel.class);
+    @GetMapping("/register")
+    @PreAuthorize("isAnonymous()")
+    @PageTitle(REGISTER)
+    public ModelAndView register(ModelAndView modelAndView,
+                                 @ModelAttribute UserCreateModel createModel) {
 
-    serviceModel.setProfilePictureUrl(
-            cloudinaryService.uploadImage(createModel.getImage()));
+        modelAndView.addObject("user", createModel);
 
-    userService.registerUser(serviceModel);
-
-    return redirect("/login");
-  }
-
-  @GetMapping("/profile")
-  @PreAuthorize("isAuthenticated()")
-  @PageTitle(PROFILE)
-  public ModelAndView profile(Principal principal, ModelAndView modelAndView) {
-
-    UserServiceModel userServiceModel = userService.findByUsername(principal.getName());
-
-    UserProfileViewModel profileModel = modelMapper.map(
-            userServiceModel, UserProfileViewModel.class);
-
-    modelAndView.addObject("user", profileModel);
-
-    return view("/users/profile", modelAndView);
-  }
-
-  @GetMapping("/edit")
-  @PreAuthorize("isAuthenticated()")
-  @PageTitle(EDIT_PROFILE)
-  public ModelAndView editProfile(Principal principal,
-                                  ModelAndView modelAndView,
-                                  @ModelAttribute UserUpdateModel updateModel) {
-
-    UserServiceModel serviceModel =
-            userService.findByUsername(principal.getName());
-
-    updateModel = modelMapper.map(serviceModel, UserUpdateModel.class);
-    updateModel.setPassword(null);
-    modelAndView.addObject("user", updateModel);
-
-    return view("/users/edit-profile", modelAndView);
-  }
-
-  @PostMapping("/edit")
-  @PreAuthorize("isAuthenticated()")
-  public ModelAndView editProfileConfirm(ModelAndView modelAndView,
-                                         @ModelAttribute UserUpdateModel updateModel,
-                                         BindingResult bindingResult) {
-
-    userUpdateValidation.validate(updateModel, bindingResult);
-
-    if (bindingResult.hasErrors()) {
-      updateModel.setOldPassword(null);
-      updateModel.setPassword(null);
-      updateModel.setConfirmPassword(null);
-
-      modelAndView.addObject("user", updateModel);
-      return view("/users/edit-profile", modelAndView);
+        return view("/users/register", modelAndView);
     }
 
-    UserServiceModel serviceModel =
-            modelMapper.map(updateModel, UserServiceModel.class);
+    @PostMapping("/register")
+    @PreAuthorize("isAnonymous()")
+    public ModelAndView registerConfirm(ModelAndView modelAndView,
+                                        @ModelAttribute UserCreateModel createModel,
+                                        BindingResult bindingResult) throws IOException, RoleNotFoundException {
 
-    userService.editUserProfile(serviceModel, updateModel.getOldPassword());
+        userCreateValidation.validate(createModel, bindingResult);
 
-    return redirect("/users/profile");
-  }
+        if (bindingResult.hasErrors()) {
+            createModel.setPassword(null);
+            createModel.setConfirmPassword(null);
+            modelAndView.addObject("user", createModel);
 
-  @GetMapping("/all")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @PageTitle(ALL_USERS)
-  public ModelAndView getAllUsers(ModelAndView modelAndView) {
+            return view("/users/register", modelAndView);
+        }
 
-    List<AllUsersViewModel> allUsers = this.userService.findAllUsers()
-            .stream()
-            .map(userServiceModel -> {
-              AllUsersViewModel user = this.modelMapper.map(userServiceModel, AllUsersViewModel.class);
-              Set<String> authorities = userServiceModel.getAuthorities()
-                      .stream()
-                      .map(RoleServiceModel::getAuthority)
-                      .collect(Collectors.toSet());
+        UserServiceModel serviceModel =
+                modelMapper.map(createModel, UserServiceModel.class);
 
-              user.setAuthorities(authorities);
-              return user;
-            })
-            .collect(Collectors.toList());
+        serviceModel.setProfilePictureUrl(
+                cloudinaryService.uploadImage(createModel.getImage()));
 
-    modelAndView.addObject("users", allUsers);
+        userService.registerUser(serviceModel);
 
-    return super.view("/users/all-users", modelAndView);
-  }
+        return redirect("/login");
+    }
 
-  @PostMapping("/set-operator/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView setModerator(@PathVariable String id) throws RoleNotFoundException {
-    userService.setUserRole(id, "operator");
+    @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle(PROFILE)
+    public ModelAndView profile(Principal principal, ModelAndView modelAndView) {
 
-    return redirect("/users/all");
-  }
+        UserServiceModel userServiceModel = userService.findByUsername(principal.getName());
 
-  @PostMapping("/set-admin/{id}")
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  public ModelAndView setAdmin(@PathVariable String id) throws RoleNotFoundException {
-    userService.setUserRole(id, "admin");
+        UserProfileViewModel profileModel = modelMapper.map(
+                userServiceModel, UserProfileViewModel.class);
 
-    return redirect("/users/all");
-  }
+        modelAndView.addObject("user", profileModel);
+
+        return view("/users/profile", modelAndView);
+    }
+
+    @GetMapping("/edit")
+    @PreAuthorize("isAuthenticated()")
+    @PageTitle(EDIT_PROFILE)
+    public ModelAndView editProfile(Principal principal,
+                                    ModelAndView modelAndView) {
+
+        UserServiceModel serviceModel =
+                userService.findByUsername(principal.getName());
+
+        UserUpdateModel updateModel = modelMapper.map(serviceModel, UserUpdateModel.class);
+        updateModel.setPassword(null);
+        modelAndView.addObject("user", updateModel);
+
+        return view("/users/edit-profile", modelAndView);
+    }
+
+    @PostMapping("/edit")
+    @PreAuthorize("isAuthenticated()")
+    public ModelAndView editProfileConfirm(ModelAndView modelAndView,
+                                           @ModelAttribute UserUpdateModel updateModel,
+                                           BindingResult bindingResult) {
+
+        userUpdateValidation.validate(updateModel, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            updateModel.setOldPassword(null);
+            updateModel.setPassword(null);
+            updateModel.setConfirmPassword(null);
+
+            modelAndView.addObject("user", updateModel);
+            return view("/users/edit-profile", modelAndView);
+        }
+
+        UserServiceModel serviceModel =
+                modelMapper.map(updateModel, UserServiceModel.class);
+
+        userService.editUserProfile(serviceModel, updateModel.getOldPassword());
+
+        return redirect("/users/profile");
+    }
+
+    @GetMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle(ALL_USERS)
+    public ModelAndView getAllUsers(ModelAndView modelAndView) {
+
+        List<AllUsersViewModel> allUsers = this.userService.findAllUsers()
+                .stream()
+                .map(userServiceModel -> {
+                    AllUsersViewModel user = this.modelMapper.map(userServiceModel, AllUsersViewModel.class);
+                    Set<String> authorities = userServiceModel.getAuthorities()
+                            .stream()
+                            .map(RoleServiceModel::getAuthority)
+                            .collect(Collectors.toSet());
+
+                    user.setAuthorities(authorities);
+                    return user;
+                })
+                .collect(Collectors.toList());
+
+        modelAndView.addObject("users", allUsers);
+
+        return super.view("/users/all-users", modelAndView);
+    }
+
+    @PostMapping("/set-operator/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView setModerator(@PathVariable String id) throws RoleNotFoundException {
+        userService.setUserRole(id, "operator");
+
+        return redirect("/users/all");
+    }
+
+    @PostMapping("/set-admin/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView setAdmin(@PathVariable String id) throws RoleNotFoundException {
+        userService.setUserRole(id, "admin");
+
+        return redirect("/users/all");
+    }
 }
