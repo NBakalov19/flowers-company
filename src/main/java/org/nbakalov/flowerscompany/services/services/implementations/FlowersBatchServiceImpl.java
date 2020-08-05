@@ -159,9 +159,6 @@ public class FlowersBatchServiceImpl implements FlowersBatchService {
   @Override
   public void deleteBatch(String id, String currentUser) {
 
-    flowersBatchRepository.findById(id)
-            .orElseThrow(() -> new FlowersBatchNotFoundException(FLOWERS_BATCH_NOT_FOUND));
-
     flowersBatchRepository.deleteById(id);
 
     LogServiceModel log = createLog(currentUser, DELETED_FLOWERS_BATCH);

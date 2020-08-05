@@ -9,7 +9,10 @@ import java.util.stream.Collectors;
 
 public final class GlobalConstants {
 
-  public final static LocalDateTime TODAY = LocalDateTime.now();
+  private GlobalConstants() {
+  }
+
+  public static final LocalDateTime TODAY = LocalDateTime.now();
 
   public static final LocalDateTime BEGIN_OF_DAY = LocalDate.now().atStartOfDay();
 
